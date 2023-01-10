@@ -1,0 +1,4695 @@
+swagger: '2.0'
+info:
+  title: 'Bemup Admin API Documents'
+  description: 'API Documents have been created by Swagger'
+  version: '1.0.0'
+  contact:
+    email: 'goutam.singha@innofied.com'
+host: '192.168.0.16:8000'
+basePath: '/api/v1'
+schemes:
+- 'http'
+parameters:
+  DeviceID:
+    name: x-auth-deviceid
+    type: string
+    description: 'Device ID'
+    in: header
+    required: true
+  DeviceType:
+    name: x-auth-devicetype
+    type: string
+    description: 'Device Type'
+    in: header
+    required: true
+  Token:
+    name: x-auth-token
+    type: string
+    description: 'Auth Token'
+    in: header
+    required: true
+  Skip: 
+    in: 'query'
+    name: 'skip'
+    type: 'string'
+    minimum: 0
+    description: 'The Skip'
+  Limit:
+    in: 'query'
+    name: 'limit'
+    type: 'string'
+    minimum: 0
+    description: 'The Limit'
+  RiderId:
+    in: 'path'
+    name: 'riderId'
+    type: 'string'
+    required: true
+    description: 'ID of the rider to get.'
+  DriverId:
+    in: 'path'
+    name: 'driverId'
+    type: 'string'
+    required: true
+    description: 'ID of the driver to get.'
+  VehicleId:
+    in: 'path'
+    name: 'vehicleId'
+    type: 'string'
+    required: true
+    description: 'ID of the vehicle to get.'
+  ZoneId:
+    in: 'path'
+    name: 'zoneId'
+    type: 'string'
+    required: true
+    description: 'ID of the zone to get.'
+  TripId:
+    in: 'path'
+    name: 'tripId'
+    type: 'string'
+    required: true
+    description: 'ID of the Trip'    
+  ComplaintId: 
+    in: 'path'
+    name: 'complaintId'
+    type: 'string'
+    required: true
+    description: 'ID of the Complaint'      
+  AdminUserId: 
+    in: 'path'
+    name: 'adminUserId'
+    type: 'string'
+    required: true
+    description: 'ID of the Admin User to get.'
+  PromoCodeId: 
+    in: 'path'
+    name: 'promoCodeId'
+    type: 'string'
+    required: true
+    description: 'ID of the Promo Code to get.'
+  RoleId: 
+    in: 'path'
+    name: 'roleId'
+    type: 'string'
+    required: true
+    description: 'ID of the Role to get.'  
+  NotificationId: 
+    in: 'path'
+    name: 'notificationId'
+    type: 'string'
+    required: true
+    description: 'ID of the Role to get.' 
+  ChangeApprovalId:
+    in: 'path'
+    name: 'changeApprovalId'
+    type: 'string'
+    required: true
+    description: 'ID of the Change Approval to get.' 
+  SubscriptionPlanId:
+    in: 'path'
+    name: 'subscriptionPlanId'
+    required: true
+    type: 'string'
+    description: 'Subscription Plan Id'
+paths:
+  ################################################################
+  # Admin APIs                                                   #
+  ################################################################
+  #Auth
+  /admin/auth/login:
+    post:
+      tags:
+      - 'Admin Auth'
+      summary: 'Login to web admin panel'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Login credentials that needs to be authenticated to the web admin panel'
+        required: true
+        schema:
+          $ref: '#/definitions/CommomLoginApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+           $ref: '#/definitions/AdminLoginApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  /admin/auth/forgot-password/request-otp:
+    post:
+      tags:
+      - 'Admin Auth'
+      summary: 'Request Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/CommonForgotPasswordRequestOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  /admin/auth/forgot-password/verify-otp:
+    post:
+      tags:
+      - 'Admin Auth'
+      summary: 'Verify Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/CommonForgotPasswordVerifyOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  #Profile
+  /account/admin/profile:
+    get:
+      tags:
+      - 'Admin Profile'
+      summary: 'Get Profile Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminProfileApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+    put:
+      tags:
+      - 'Admin Profile'
+      summary: 'Edit Profile Information'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'formData'
+        name: 'profilePicURL'
+        type: file
+        description: The file to upload.
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'Admin First Name'
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Admin Last Name'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminProfileApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  /account/admin/profile/change-password:
+    put:
+      tags: 
+      - 'Admin Profile'
+      summary: 'Change Profile Password'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        description: 'Old and New Password'
+        schema: 
+         $ref: '#/definitions/AdminProfileChangePasswordApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  /account/admin/profile/logout:
+    post:
+      tags:
+      - 'Admin Profile'
+      summary: 'Logout from web admin panel'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+        505: 
+          description: 'Admin Not Found'
+  #Rider
+  /account/admin/rider/list:
+    post:
+      tags:
+      - 'Rider - Admin'
+      summary: 'List and Search Rider'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/rider/{riderId}:
+    get:
+      tags: 
+      - 'Rider - Admin'
+      summary: 'Get Rider Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RiderId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Rider - Admin'
+      summary: 'Edit Rider Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RiderId'
+      - in: 'formData'
+        name: 'profilePicture'
+        type: 'file'
+        description: 'Profile Picture'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+        required: true
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+        required: true
+      - in: 'formData'
+        name: 'phoneCountryCode'
+        type: 'string'
+        description: 'Country Code for Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'phoneNumber'
+        type: 'string'
+        description: 'Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        format: 'email'
+        description: 'Email'
+        required: true
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Rider - Admin'
+      summary: 'Delete Rider Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RiderId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/rider/{riderId}/change-status:
+    put:
+      tags: 
+      - 'Rider - Admin'
+      summary: 'Enable/Disable Rider'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RiderId'
+      - in: body
+        name: body
+        description: API Body
+        required: true
+        schema:
+          type: object
+          properties:
+            accountStatus: 
+              type: number
+              description: '1 - Enable, 2- Disable'
+              example: 1
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/rider/{riderId}/live-geo-location:
+    get:
+      tags: 
+      - 'Rider - Admin'
+      summary: 'Get Live Geo Location'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RiderId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/LiveGeoLocationApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  #Driver
+  /account/admin/driver/add:
+    post:
+      tags:
+      - 'Driver - Admin'
+      summary: 'Add Driver'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'formData'
+        name: 'profilePicture'
+        type: 'file'
+        description: 'Profile Image'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+        required: true
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+        required: true
+      - in: 'formData'
+        name: 'countryCode'
+        type: 'string'
+        description: 'Country Code for Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'number'
+        type: 'string'
+        description: 'Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        description: 'Email'
+        required: true
+      - in: 'formData'
+        name: 'dob'
+        type: 'string'
+        description: 'Date of birth'
+        required: true 
+      - in: 'formData'
+        name: 'line'
+        type: 'string'
+        description: 'Address - Line'
+        required: true
+      - in: 'formData'
+        name: 'city'
+        type: 'string'
+        description: 'Addresss - City'
+        required: true
+      - in: 'formData'
+        name: 'state'
+        type: 'string'
+        description: 'Address - State'
+        required: true
+      - in: 'formData'
+        name: 'zip'
+        type: 'string'
+        description: 'Address - Zip'
+        required: true
+      - in: 'formData'
+        name: 'attachedDefaultVehicle'
+        type: 'string'
+        description: 'Default Vehicle Id'
+        required: true
+      - in: 'formData'
+        name: 'licenseUrlFront'
+        type: file
+        description: 'Licence Document Front'
+        required: true
+      - in: 'formData'
+        name: 'licenseUrlBack'
+        type: file
+        description: 'Licence Document Back'
+        required: true
+      - in: 'formData'
+        name: 'timeZoneOffset'
+        type: 'string'
+        description: 'Time Zone Offset'
+        required: true
+      - in: 'formData'
+        name: 'operatingZone'
+        type: 'string'
+        description: 'Zone Id'
+        required: true
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/driver/list:
+    post:
+      tags:
+      - 'Driver - Admin'
+      summary: 'List and Search Driver'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/driver/{driverId}:
+    get:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Get Driver Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Edit Driver Information'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      - in: 'formData'
+        name: 'profilePicture'
+        type: 'file'
+        description: 'Profile Image'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+      - in: 'formData'
+        name: 'phoneCountryCode'
+        type: 'string'
+        description: 'Country Code for Phone Number'
+      - in: 'formData'
+        name: 'phoneNumber'
+        type: 'string'
+        description: 'Phone Number'
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        description: 'Email'
+      - in: 'formData'
+        name: 'line'
+        type: 'string'
+        description: 'Address - Line'
+      - in: 'formData'
+        name: 'city'
+        type: 'string'
+        description: 'Addresss - City'
+      - in: 'formData'
+        name: 'state'
+        type: 'string'
+        description: 'Address - State'
+      - in: 'formData'
+        name: 'zip'
+        type: 'string'
+        description: 'Address - Zip'
+      - in: 'formData'
+        name: 'vehicleId'
+        type: 'string'
+        description: 'Vehicle Id'
+        required: true
+      - in: 'formData'
+        name: 'zoneId'
+        type: 'string'
+        description: 'Zone Id'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Delete Driver Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/driver/{driverId}/change-status:
+    put:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Enable/Disable Driver'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      - in: body
+        name: body
+        description: API Body
+        required: true
+        schema:
+          type: object
+          properties:
+            accountStatus: 
+              type: number
+              description:  '1 - Enable, 2- Disable'
+              example: 1
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/driver/{driverId}/accept:
+    put:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Accept Driver'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+          
+  /account/admin/driver/{driverId}/vehicle/{vehicleId}/assign:
+    put:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Assign Vehicle Driver'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      - $ref: '#/parameters/VehicleId'
+      - in: body
+        name: body
+        required: true
+        description: 'api body'
+        schema: 
+         type: object
+         required: 
+          - currentAssignedVehicleType
+         properties: 
+          currentAssignedVehicleType: 
+           type: string
+           example: "5b029c691464c6e7e8a0463a"
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/driver/{driverId}/vehicle/{vehicleId}/deassign:
+    put:
+      tags: 
+      - 'Driver - Admin'
+      summary: 'Deassign Vehicle Driver'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      - $ref: '#/parameters/VehicleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverVehicleDeassignApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Vehicle
+  /account/admin/vehicle/add:
+    post:
+      tags:
+      - 'Vehicle - Admin'
+      summary: 'Add Vehicle'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        required: true
+        description: 'Add Vehicle API Body'
+        schema:
+         $ref: '#/definitions/VehicleAddApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/vehicle/list:
+    post:
+      tags:
+      - 'Vehicle - Admin'
+      summary: 'List and Search Vehicle'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/VehicleListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/vehicle/{vehicleId}:
+    get:
+      tags: 
+      - 'Vehicle - Admin'
+      summary: 'Get Vehicle Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/VehicleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/VehicleApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Vehicle - Admin'
+      summary: 'Edit Vehicle Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/VehicleId'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/VehicleEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/VehicleApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Vehicle - Admin'
+      summary: 'Delete Vehicle Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/VehicleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+          
+  #Approval
+  /account/admin/driver/{driverId}/change-approval:
+    get:
+      tags:
+      - 'Approval - Admin'
+      summary: 'List Pending Driver Profile Change Approval'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ApprovalListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error' 
+  /account/admin/driver/{driverId}/change-approval/{changeApprovalId}:
+    put:
+      tags:
+      - 'Approval - Admin'
+      summary: 'Approve Driver Profile Change'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/DriverId'
+      - $ref: '#/parameters/ChangeApprovalId'
+      - in: body
+        name: body
+        description: 'body'
+        schema:
+         type: object
+         properties:
+          status: 
+           type: boolean
+           example: true
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error' 
+  /account/admin/vehicle/{vehicleId}/change-approval:
+    get:
+      tags:
+      - 'Approval - Admin'
+      summary: 'List Pending Vehcile Change Approval'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/VehicleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ApprovalListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error' 
+  /account/admin/vehicle/{vehicleId}/change-approval/{changeApprovalId}:
+    put:
+      tags:
+      - 'Approval - Admin'
+      summary: 'Approve Vehcile Change'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/VehicleId'
+      - $ref: '#/parameters/ChangeApprovalId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error' 
+  
+  #Global Config
+  /account/admin/global-config:
+    get:
+      tags: 
+      - 'Global Config - Admin'
+      summary: 'Get Global Config Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/GlobalConfigApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Global Config - Admin'
+      summary: 'Edit Global Config Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/GlobalConfigEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/GlobalConfigApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'    
+  #Zone
+  /account/admin/zone/add:
+    post:
+      tags:
+      - 'Zone - Admin'
+      summary: 'Add Zone'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        required: true
+        description: 'Add Zone API Body'
+        schema:
+         $ref: '#/definitions/ZoneAddApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ZoneListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/zone/list:
+    post:
+      tags:
+      - 'Zone - Admin'
+      summary: 'List and Search Zone'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ZoneListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/zone/{zoneId}:
+    get:
+      tags: 
+      - 'Zone - Admin'
+      summary: 'Get Zone Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/ZoneId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ZoneApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Zone - Admin'
+      summary: 'Edit Zone Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/ZoneId'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/ZoneEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ZoneApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Zone - Admin'
+      summary: 'Delete Zone Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/ZoneId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Trip
+  /account/admin/trip/list:
+    post:
+      tags:
+      - 'Trip - Admin'
+      summary: 'List and Search Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/TripListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/trip/{tripId}:
+    get:
+      tags: 
+      - 'Trip - Admin'
+      summary: 'Get Trip Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/TripDetailsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/trip/{tripId}/end:
+    put:
+      tags: 
+      - 'Trip - Admin'
+      summary: 'End Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+
+  /account/admin/dashboard/no-of-completed-trips:
+    get:
+      tags:
+      - 'Dashboard Revenue - Admin'
+      summary: 'No of completed Trips'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'query'
+        name: 'revenueType'
+        type: 'string'
+        description: 'The Revenue Type'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/CompletedTripsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/dashboard/entity-count:
+    get:
+      tags:
+      - 'Dashboard Revenue - Admin'
+      summary: 'Count of different entity'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/CountOfDifferentEntityApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Complaint
+  /account/admin/complaint/list:
+    post:
+      tags:
+      - 'Complaint - Admin'
+      summary: 'List and Search Complaint'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/ComplaintListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/complaint/{complaintId}/changeStatus:
+    put:
+      tags:
+      - 'Complaint - Admin'
+      summary: 'Change Status Complaint'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/ComplaintId'
+      - in: body
+        name: body
+        required: true
+        description: 'Api Body'
+        schema:
+         type: 'object'
+         properties:
+          status: 
+           type: number
+           example: 1
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Role
+  /account/admin/role/add:
+    post:
+      tags:
+      - 'Role - Admin'
+      summary: 'Add Role'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        required: true
+        description: 'Add Role API Body'
+        schema:
+         $ref: '#/definitions/AddRoleApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RoleApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/role/list:
+    post:
+      tags:
+      - 'Role - Admin'
+      summary: 'List and Search Role'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RoleListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/role/{roleId}:
+    get:
+      tags: 
+      - 'Role - Admin'
+      summary: 'Get Role Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RoleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RoleApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Role - Admin'
+      summary: 'Edit Role Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RoleId'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/RoleEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RoleApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Role - Admin'
+      summary: 'Delete Role Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/RoleId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Admin User
+  /account/admin/admin-user/add:
+    post:
+      tags:
+      - 'Admin User - Admin'
+      summary: 'Add Admin User'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'formData'
+        name: 'profileImage'
+        type: 'file'
+        description: 'Profile Image'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+        required: true
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+        required: true
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        description: 'Email'
+        required: true
+      - in: 'formData'
+        name: 'isSuperAdmin'
+        type: boolean
+        default: true
+        required: true
+      - in: 'formData'
+        name: 'roleId'
+        type: 'string'
+        description: '501d86090d371bab2c0341c5'
+        required: true
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminUserApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/admin-user/list:
+    post:
+      tags:
+      - 'Admin User - Admin'
+      summary: 'List and Search Admin User'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminUserListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/admin-user/{adminUserId}:
+    get:
+      tags: 
+      - 'Admin User - Admin'
+      summary: 'Get Admin User Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/AdminUserId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminUserApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Admin User - Admin'
+      summary: 'Edit Admin User Information'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/AdminUserId'
+      - in: 'formData'
+        name: 'profileImage'
+        type: 'file'
+        description: 'Profile Image'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        description: 'Email'
+      - in: 'formData'
+        name: 'isSuperAdmin'
+        type: boolean
+        default: true
+      - in: 'formData'
+        name: 'roleId'
+        type: 'string'
+        description: '501d86090d371bab2c0341c5'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/AdminUserApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Admin User - Admin'
+      summary: 'Delete Admin User Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/AdminUserId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Promo Code
+  /account/admin/promo-code/add:
+    post:
+      tags:
+      - 'Promo Code - Admin'
+      summary: 'Generate Promo Code'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: body
+        required: true
+        description: 'Add Promo Code API Body'
+        schema:
+         $ref: '#/definitions/PromoCodeAddApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/PromoCodeApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/promo-code/list:
+    post:
+      tags:
+      - 'Promo Code - Admin'
+      summary: 'List and Search promo code'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/PromoCodeListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/promo-code/{promoCodeId}:
+    get:
+      tags: 
+      - 'Promo Code - Admin'
+      summary: 'Get Promo Code Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/PromoCodeId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/PromoCodeApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Promo Code - Admin'
+      summary: 'Edit Promo Code Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/PromoCodeId'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/PromoCodeEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/PromoCodeApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags: 
+      - 'Promo Code - Admin'
+      summary: 'Delete Promo Code Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/PromoCodeId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Notification
+  /account/admin/notification/list:
+    post:
+      tags:
+      - 'Notification - Admin'
+      summary: 'List and Search notificattion'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: body
+        name: body
+        required: true
+        description: 'Search Key'
+        schema:
+         type: 'object'
+         properties:
+          searchKey: 
+           type: string
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/NotificationListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/admin/notification/{notificationId}:
+    get:
+      tags: 
+      - 'Notification - Admin'
+      summary: 'Get Notification Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/NotificationId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/NotificationApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags: 
+      - 'Notification - Admin'
+      summary: 'Edit Notification Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/NotificationId'
+      - in: body
+        name: body
+        schema:
+          $ref: '#/definitions/NoticationEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/NotificationApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  #Subscription APIs        
+  /account/admin/subscription-plan/list:
+    post:
+      tags:
+      - 'Admin Subscription Plan'
+      summary: 'Get Subscription Plan List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription List API Body'
+        required: true
+        schema:
+          type: object
+          properties:
+           searchKey:
+            type: string
+            example: 'plan 1'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SubscriptionPlanListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/admin/subscription-plan/add:
+    post:
+      tags:
+      - 'Admin Subscription Plan'
+      summary: 'Add Subscription Plan'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription Plan API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/SubscriptionPlanApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SubscriptionPlanApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/admin/subscription-plan/{subscriptionPlanId}:
+    get:
+      tags:
+      - 'Admin Subscription Plan'
+      summary: 'Get Subscription Plan Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionPlanId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SubscriptionPlanApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+    put:
+      tags:
+      - 'Admin Subscription Plan'
+      summary: 'Edit Subscription Plan Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionPlanId'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/SubscriptionPlanEditApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+    delete:
+      tags:
+      - 'Admin Subscription Plan'
+      summary: 'Delete Subscription Plan'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionPlanId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  
+definitions:
+  ########################################
+  # API Common API Body and Responses    #
+  ########################################
+  SuccessApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: 'boolean'
+        default: true
+  CommomLoginApiBody:
+    type: 'object'
+    properties:
+      email:
+        type: 'string'
+        format: 'email'
+        example: 'moumita.mondal@innofied.com'
+      password: 
+        type: 'string'
+        example: 'Innofied123'
+  CommonForgotPasswordRequestOTPApiBody:
+    type: 'object'
+    properties:
+      email:
+       type: 'string'
+       format: 'email'
+  CommonForgotPasswordVerifyOTPApiBody:
+    type: 'object'
+    properties:
+      email:
+       type: 'string'
+       format: 'email'
+      otp:
+       type: number
+      password:
+       type: 'string'
+  ########################################
+  # Admin API Responses                 #
+  ########################################
+  #Auth
+  AdminLoginApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+      data:
+        type: 'object'
+        properties: 
+          token: 
+            type: 'string'
+          user:
+            type: 'object'
+            properties:
+              _id:
+                type: string
+                format: mongooseId
+              personalInfo:
+                type: 'object'
+                properties:
+                  firstName:
+                   type: string
+                   example: 'Goutam'
+                  lastName:
+                   type: string
+                   example: 'Singha'
+                  fullName:
+                   type: string
+                   example: 'Goutam Singha'
+                  profilePicture:
+                   type: string
+                   format: url
+                   example: 'https://dummyimage.com/600x400/000/fff'
+                  email:
+                   type: string
+                   format: email
+                   example: 'goutam.singha@innofied.com'
+              roleInfo:
+                type: 'object'
+                properties:
+                  isSuperAdmin:
+                   type: boolean
+                   default: true
+                  roleId:
+                   type: object
+                   properties:
+                     _id:
+                      type: string
+                      example: '501d86090d371bab2c0341c5'
+                     name:
+                      type: string
+                     permissions:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          moduleName:
+                           type: string
+                           example: 'Module Name 1'
+                          role:
+                           type: number
+                           example: 1
+              accountStatus:
+               type: number
+               example: 1
+              settings:
+                type: 'object'
+                properties:
+                 selectedLanguage:
+                  type: string
+                  example: 'en-us'
+  #Profile
+  AdminProfileApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+      data:
+        type: 'object'
+        properties: 
+          _id:
+                type: string
+                format: mongooseId
+          personalInfo:
+                type: 'object'
+                properties:
+                  firstName:
+                   type: string
+                   example: 'Goutam'
+                  lastName:
+                   type: string
+                   example: 'Singha'
+                  fullName:
+                   type: string
+                   example: 'Goutam Singha'
+                  profilePicture:
+                   type: string
+                   format: url
+                   example: 'https://dummyimage.com/600x400/000/fff'
+                  email:
+                   type: string
+                   format: email
+                   example: 'goutam.singha@innofied.com'
+          roleInfo:
+            type: 'object'
+            properties:
+              isSuperAdmin:
+                   type: boolean
+                   default: true
+              roleId:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: '501d86090d371bab2c0341c5'
+                  name:
+                    type: string
+                  permissions:
+                   type: array
+                   items:
+                    type: object
+                    properties:
+                      moduleName:
+                         type: string
+                         example: 'Module Name 1'
+                      role:
+                         type: number
+                         example: 1
+          accountStatus:
+               type: number
+               example: 1
+          settings:
+                type: 'object'
+                properties:
+                 selectedLanguage:
+                  type: string
+                  example: 'en-us'
+  AdminProfileChangePasswordApiBody:
+   type: 'object'
+   properties:
+    oldPassword:
+      type: 'string'
+    newPassword:
+      type: 'string'
+      
+  #Rider
+  RiderApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+         _id:
+            type: string
+            format: mongooseId
+         displayId:
+          type: string
+          example: 'ABCDER'
+         personalInfo:
+          type: object
+          properties:
+           firstName:
+            type: 'string'
+            example: 'Goutam'
+           lastName: 
+            type: 'string'
+            example: 'Singha'
+           fullName: 
+            type: 'string'
+            example: 'Goutam Singha'
+           email:
+            type: 'string'
+            format: 'email'
+            example: 'goutam.singha@innofied.com'
+           phone:
+            type: 'object'
+            properties: 
+              countryCode: 
+                type: 'string'
+                example: 'IN'
+              number:
+                type: 'string'
+                example: '9876543210'
+           profilePicture:
+            type: string
+            format: url
+            example: 'https://dummyimage.com/600x400/000/fff'
+         accountStatus:
+          type: number
+          example: 1
+         ratingData:
+          type: object
+          properties:
+            total:
+             type: number
+             example: '10'
+            count:
+             type: number
+             example: '2'
+         paymentInfo:
+          type: array
+          items:
+            type: object
+            properties:
+              id: 
+               type: string
+               example: 'CustXXXXXXXXX'
+              gatewayType:
+               type: number
+               example: 1
+              isDefault:
+               type: boolean
+               example: true
+         settings:
+          type: object
+          properties:
+            selectedLanguage:
+              type: string
+              example: 'en-us'
+            timeZoneOffset:
+             type: number
+             example: 1234
+            emergencyContacts:
+             type: array
+             items:
+              type: string
+              example: '+91 9876543210'
+         favoriteSourceDestinationList:
+          type: array
+          items: 
+            type: object
+            properties:
+              label: 
+               type: string
+               example: 'Home'
+              source:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    example: '12 Apartment, Salt Lake, 700102'
+                  geoLocation:
+                   type: array
+                   items:
+                    type: number
+                   example: [99, 128]
+                   description: 'Logitude, Latitude'
+              destination:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    example: '12 Apartment, Salt Lake, 700102'
+                  geoLocation:
+                   type: array
+                   items:
+                    type: number
+                   example: [99, 128]
+                   description: 'Logitude, Latitude'
+         otherInfo:
+          type: object
+          properties:
+            addressBook:
+             type: array
+             items:
+              type: object
+              properties:
+               label: 
+                 type: string
+                 example: 'Home'
+               address:
+                type: string
+                example: '12 Apartment, Salt Lake, 700102'
+               geoLocation:
+                type: array
+                items:
+                  type: number
+                  description: 'Logitude, Latitude'
+                example: [99, 128]
+  RiderListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: 'object'
+            properties:
+             _id:
+                type: string
+                format: mongooseId
+             displayId:
+              type: string
+              example: 'ABCDER'
+             personalInfo:
+              type: object
+              properties:
+               firstName:
+                type: 'string'
+                example: 'Goutam'
+               lastName: 
+                type: 'string'
+                example: 'Singha'
+               fullName: 
+                type: 'string'
+                example: 'Goutam Singha'
+               email:
+                type: 'string'
+                format: 'email'
+                example: 'goutam.singha@innofied.com'
+               phone:
+                type: 'object'
+                properties: 
+                  countryCode: 
+                    type: 'string'
+                    example: 'IN'
+                  number:
+                    type: 'string'
+                    example: '9876543210'
+               profilePicture:
+                type: string
+                format: url
+                example: 'https://dummyimage.com/600x400/000/fff'
+             accountStatus:
+              type: number
+              example: 1
+             ratingData:
+              type: object
+              properties:
+                total:
+                 type: number
+                 example: '10'
+                count:
+                 type: number
+                 example: '2'
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+            
+  #Driver
+  DriverApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+         _id:
+            type: string
+            format: mongooseId
+            example: '501d86090d371bab2c0341c5'
+         displayId:
+          type: string
+          example: 'ABCDER'
+         personalInfo:
+          type: object
+          properties:
+           firstName:
+            type: 'string'
+            example: 'Goutam'
+           lastName: 
+            type: 'string'
+            example: 'Singha'
+           fullName: 
+            type: 'string'
+            example: 'Goutam Singha'
+           email:
+            type: 'string'
+            format: 'email'
+            example: 'goutam.singha@innofied.com'
+           phone:
+            type: 'object'
+            properties: 
+              countryCode: 
+                type: 'string'
+                example: 'IN'
+              number:
+                type: 'string'
+                example: '9876543210'
+           profilePicture:
+            type: string
+            format: url
+            example: 'https://dummyimage.com/600x400/000/fff'
+           address:
+            type: object
+            properties:
+              line:
+               type: string
+               example: '12 Street'
+              city:
+               type: string
+               example: 'Siliguri'
+              zip:
+               type: string
+               example: '12345T'
+              state:
+               type: string
+               example: 'West Bengal'
+         ratingData:
+          type: object
+          properties:
+            total:
+             type: number
+             example: '10'
+            count:
+             type: number
+             example: '2'
+         paymentInfo:
+          type: object
+          properties:
+            payment:
+             type: array
+             items: 
+              type: object
+              properties:
+                id: 
+                 type: string
+                 example: 'Cust_1234XXXXX'
+                status:
+                 type: number
+                 example: 2
+                gatewayType:
+                 type: number
+                 example: 1
+                isDefault:
+                 type: boolean
+                 example: true
+         accountStatus:
+          type: number
+          example: 1
+         documents:
+          type: object
+          properties:
+            license:
+             type: object
+             properties:
+              url:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+              issuingAuthority:
+               type: string
+               example: 'Authority Name'
+              validUpto:
+                type: string
+                example: '2018-05-04T07:50:22.408Z'
+         vehicleInfo: 
+          type: 'object'
+          properties:
+            attachedDefaultVehicle:
+             type: 'object'
+             properties:
+              licensePlate:
+                type: string
+                example: 'ABCDER'
+              registrationNumber:
+                type: string
+                example: 'REG432156'
+              vehicleType:
+                type: object
+                properties:
+                 _id:
+                  type: string
+                  example: '4eb6e7e7e9b7f4194e000001'
+                 type:
+                  type: object
+                  properties:
+                    en-us:
+                     type: string
+                     example: 'SUV'
+              color:
+                type: string
+                example: '#666666'
+              brand:
+                type: string
+                example: 'Brand'
+              model:
+                type: string
+                example: 'Model'
+              yearOfManufacturing:
+                type: number
+                example: 2018
+              totalSeats:
+                type: number
+                example: 2
+              status:
+                type: string
+                example: 3
+              addedBy:
+               type: object
+               properties:
+                id:
+                 type: object
+                 properties:
+                  _id:
+                   type: string
+                   example: '4eb6e7e7e9b7f4194e000001'
+                  fullName: 
+                   type: string
+                   example: 'Goutam Singha'
+                  profilePicture:
+                   type: string
+                   example: 'https://dummyimage.com/600x400/000/fff'
+                type:
+                 type: number
+                 example: 2
+            currentAssignedVehicleType:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  example: '4eb6e7e7e9b7f4194e000001'
+                type:
+                  type: object
+                  properties:
+                    en-us:
+                      type: string
+                      example: 'SUV'
+            otherVehicleTypePreferences:
+              type: array
+              items:
+               type: object
+               properties:
+                _id:
+                  type: string
+                  example: '4eb6e7e7e9b7f4194e000001'
+                type:
+                  type: object
+                  properties:
+                    en-us:
+                      type: string
+                      example: 'SUV'
+         settings:
+          type: object
+          properties:
+            selectedLanguage:
+              type: string
+              example: 'en-us'
+            timeZoneOffset:
+             type: number
+             example: 1234
+            operatingZone:
+             type: object
+             properties:
+              _id:
+               type: string
+               example: '5ab0aa8cc01e8b0af14bc728'
+              name:
+               type: string
+               example: 'Driver Zone 1'
+            isOnline:
+             type: boolean
+             example: true
+         currentLocationInfo:
+          type: 'object'
+          properties:
+            geolocation:
+              type: array
+              items:
+                type: number
+                example: [99, 128]
+                description: 'Logitude, Latitude'            
+            angle:
+              type: number
+              example: 0
+            lastUpdated:
+              type: string
+              example: '2018-05-04T07:50:22.408Z'
+  DriverListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: 'object'
+            properties:
+             _id:
+                type: string
+                format: mongooseId
+             displayId:
+              type: string
+              example: 'ABCDER'
+             personalInfo:
+              type: object
+              properties:
+               firstName:
+                type: 'string'
+                example: 'Goutam'
+               lastName: 
+                type: 'string'
+                example: 'Singha'
+               fullName: 
+                type: 'string'
+                example: 'Goutam Singha'
+               email:
+                type: 'string'
+                format: 'email'
+                example: 'goutam.singha@innofied.com'
+               phone:
+                type: 'object'
+                properties: 
+                  countryCode: 
+                    type: 'string'
+                    example: 'IN'
+                  number:
+                    type: 'string'
+                    example: '9876543210'
+               profilePicture:
+                type: string
+                format: url
+                example: 'https://dummyimage.com/600x400/000/fff'
+               address:
+                type: object
+                properties:
+                  line:
+                   type: string
+                   example: '12 Street'
+                  city:
+                   type: string
+                   example: 'Siliguri'
+                  zip:
+                   type: string
+                   example: '12345T'
+                  state:
+                   type: string
+                   example: 'West Bengal'
+             ratingData:
+              type: object
+              properties:
+                total:
+                 type: number
+                 example: '10'
+                count:
+                 type: number
+                 example: '2'
+             settings:
+              type: object
+              properties:
+                selectedLanguage:
+                  type: string
+                  example: 'en-us'
+                timeZoneOffset:
+                 type: number
+                 example: 1234
+                operatingZone:
+                 type: object
+                 properties:
+                  _id:
+                   type: string
+                   example: '5ab0aa8cc01e8b0af14bc728'
+                  name:
+                   type: string
+                   example: 'Driver Zone 1'
+                isOnline:
+                 type: boolean
+                 example: true
+             accountStatus:
+              type: number
+              example: 1
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+  DriverVehicleDeassignApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+         _id:
+            type: string
+            format: mongooseId
+            example: '501d86090d371bab2c0341c5'
+         displayId:
+          type: string
+          example: 'ABCDER'
+         personalInfo:
+          type: object
+          properties:
+           firstName:
+            type: 'string'
+            example: 'Goutam'
+           lastName: 
+            type: 'string'
+            example: 'Singha'
+           fullName: 
+            type: 'string'
+            example: 'Goutam Singha'
+           email:
+            type: 'string'
+            format: 'email'
+            example: 'goutam.singha@innofied.com'
+           phone:
+            type: 'object'
+            properties: 
+              countryCode: 
+                type: 'string'
+                example: 'IN'
+              number:
+                type: 'string'
+                example: '9876543210'
+           profilePicture:
+            type: string
+            format: url
+            example: 'https://dummyimage.com/600x400/000/fff'
+           address:
+            type: object
+            properties:
+              line:
+               type: string
+               example: '12 Street'
+              city:
+               type: string
+               example: 'Siliguri'
+              zip:
+               type: string
+               example: '12345T'
+              state:
+               type: string
+               example: 'West Bengal'
+         ratingData:
+          type: object
+          properties:
+            total:
+             type: number
+             example: '10'
+            count:
+             type: number
+             example: '2'
+         paymentInfo:
+          type: object
+          properties:
+            payment:
+             type: array
+             items: 
+              type: object
+              properties:
+                id: 
+                 type: string
+                 example: 'Cust_1234XXXXX'
+                status:
+                 type: number
+                 example: 2
+                gatewayType:
+                 type: number
+                 example: 1
+                isDefault:
+                 type: boolean
+                 example: true
+         accountStatus:
+          type: number
+          example: 1
+         documents:
+          type: object
+          properties:
+            license:
+             type: object
+             properties:
+              url:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+              issuingAuthority:
+               type: string
+               example: 'Authority Name'
+              validUpto:
+                type: string
+                example: '2018-05-04T07:50:22.408Z'
+         settings:
+          type: object
+          properties:
+            selectedLanguage:
+              type: string
+              example: 'en-us'
+            timeZoneOffset:
+             type: number
+             example: 1234
+            operatingZone:
+             type: object
+             properties:
+              _id:
+               type: string
+               example: '5ab0aa8cc01e8b0af14bc728'
+              name:
+               type: string
+               example: 'Driver Zone 1'
+            isOnline:
+             type: boolean
+             example: true
+         currentLocationInfo:
+          type: 'object'
+          properties:
+            geolocation:
+              type: array
+              items:
+                type: number
+                example: [99, 128]
+                description: 'Logitude, Latitude'            
+            angle:
+              type: number
+              example: 0
+            lastUpdated:
+              type: string
+              example: '2018-05-04T07:50:22.408Z'          
+  #Vehicle
+  VehicleAddApiBody:
+   type: object
+   required:
+    - licensePlate
+    - registrationNumber
+    - zoneId
+    - color
+    - brand
+    - model
+    - yearOfManufacturing
+    - totalSeats
+   properties:
+    licensePlate:
+     type: string
+     example: '12'
+    registrationNumber:
+     type: string
+     example: '12'
+    zoneId:
+     type: string
+     example: '5ab0aa8cc01e8b0af14bc728'
+    color:
+     type: string
+     example: '#444444'
+    brand:
+     type: string
+     example: 'SUV'
+    model:
+     type: string
+     example: 'Model'
+    yearOfManufacturing:
+     type: number
+     example: '2018'
+    totalSeats:
+     type: number
+     example: 4
+    isPetsAllowed:
+     type: boolean
+     example: true
+     
+  VehicleEditApiBody:
+   type: 'object'
+   properties:
+    licensePlate:
+     type: string
+     example: '12'
+    registrationNumber:
+     type: string
+     example: '12'
+    zoneId:
+     type: string
+     example: '5ab0aa8cc01e8b0af14bc728'
+    color:
+     type: string
+     example: '#444444'
+    brand:
+     type: string
+     example: 'SUV'
+    model:
+     type: string
+     example: 'Model'
+    yearOfManufacturing:
+     type: number
+     example: '2018'
+    totalSeats:
+     type: number
+     example: 2
+    status:
+     type: number
+     example: 2
+  VehicleApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          _id:
+            type: string
+            format: mongooseId
+          licensePlate:
+           type: string
+           example: '12'
+          registrationNumber:
+           type: string
+           example: '12'
+          vehicleType:
+            type: object
+            properties:
+              _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+              type: 
+                type: object
+                properties:
+                  en-us:
+                    type: string
+                    example: suv
+          color:
+           type: string
+           example: '#444444'
+          brand:
+           type: string
+           example: 'SUV'
+          model:
+           type: string
+           example: 'Model'
+          yearOfManufacturing:
+           type: number
+           example: '2018'
+          totalSeats:
+           type: number
+           example: 2
+          status:
+            type: number
+            example: 1
+            description: ''
+          addedBy:
+            type: object
+            properties:
+              id:
+               type: object
+               properties:
+                _id:
+                   type: string
+                fullName:
+                   type: string
+                profilePicture:
+                   type: string
+                   format: url
+                type:
+                   type: number
+                   example: 2
+                   description: 'driver - 2, admin - 3'
+  VehicleListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: 'object'
+            properties:
+              _id:
+                type: string
+                format: mongooseId
+              licensePlate:
+               type: string
+               example: '12'
+              registrationNumber:
+               type: string
+               example: '12'
+              vehicleType:
+                type: object
+                properties:
+                  _id: 
+                    type: string
+                    example: '5ab0aa8cc01e8b0af14bc728'
+                  type: 
+                    type: object
+                    properties:
+                      en-us:
+                        type: string
+                        example: suv
+              color:
+               type: string
+               example: '#444444'
+              brand:
+               type: string
+               example: 'SUV'
+              model:
+               type: string
+               example: 'Model'
+              yearOfManufacturing:
+               type: number
+               example: '2018'
+              totalSeats:
+               type: number
+               example: 2
+              status:
+               type: number
+               example: 1
+               description: ''
+              addedBy:
+               type: object
+               properties:
+                id:
+                 type: object
+                 properties:
+                  _id:
+                   type: string
+                  fullName:
+                   type: string
+                  profilePicture:
+                   type: string
+                   format: url
+                type:
+                 type: number
+                 example: 2
+                 description: 'driver - 2, admin - 3'
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+            
+  #Global Config
+  GlobalConfigApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     default: true
+    data:
+      type: object
+      properties: 
+        termsAndCondition:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+        privacyPolicy:
+         type: string
+         format: url
+        faq:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+        supportContactNo:
+         type: string
+         example: 'IN'
+        supportEmail:
+         type: string
+         format: email
+         example: 'goutam.singha@innofied.com'
+        referalMessageForRider:
+          type: object
+          properties:
+           en-us:
+            type: string
+            example: 'Message'
+        appleStoreLink:
+          type: object
+          properties:
+            rider:
+             type: string
+             format: url
+             example: 'https://dummyimage.com/600x400/000/fff'
+            driver:
+             type: string
+             format: url
+             example: 'https://dummyimage.com/600x400/000/fff'
+        playStoreLink:
+          type: object
+          properties:
+            rider:
+             type: string
+             format: url
+             example: 'https://dummyimage.com/600x400/000/fff'
+            driver:
+             type: string
+             format: url
+             example: 'https://dummyimage.com/600x400/000/fff'
+  GlobalConfigEditApiBody:
+   type: object
+   properties: 
+    termsAndCondition:
+     type: string
+     format: url
+     example: 'https://dummyimage.com/600x400/000/fff'
+    privacyPolicy:
+     type: string
+     format: url
+    faq:
+     type: string
+     format: url
+     example: 'https://dummyimage.com/600x400/000/fff'
+    supportContactNo:
+     type: string
+     example: 'IN'
+    supportEmail:
+     type: string
+     format: email
+     example: 'goutam.singha@innofied.com'
+    referalMessageForRider:
+      type: object
+      properties:
+       en-us:
+        type: string
+        example: 'Message'
+    appleStoreLink:
+      type: object
+      properties:
+        rider:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+        driver:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+    playStoreLink:
+      type: object
+      properties:
+        rider:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+        driver:
+         type: string
+         format: url
+         example: 'https://dummyimage.com/600x400/000/fff'
+  
+  #Approval
+  ApprovalListApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     default: true
+    data:
+     type: array
+     items:
+       type: object
+       properties:
+        status:
+         type: string
+        key:
+         type: string
+        path:
+         type: string
+        oldValue:
+          type: object
+        newValue:
+          type: object
+        requestType:
+          type: string
+     
+ 
+  #Zone
+  ZoneAddApiBody:
+    type: object
+    required:
+     - zoneObj
+     - lang
+    properties: 
+      zoneObj:
+        type: object
+        required:
+         - name
+         - geoFence
+         - searchingRadius
+         - distanceUnit
+         - countryCode
+        properties: 
+          name:
+           type: string
+           example: 'Zone 1'
+          geoFence:
+           type: object
+           properties: 
+            type:
+              type: string
+              example: 'Point'
+            coordinates:
+              type: array
+              items:
+               type: number
+               description: 'logitude, latitude'
+              example: [88,129]
+          searchingRadius:
+            type: number
+            example: 2
+          currency:
+            type: string
+            description: 'USD, INR'
+            example: USD
+          distanceUnit:
+            type: number
+            example: 1
+          sosContactNo:
+            type: string
+            example: '+91 987654310'
+          countryCode:
+            type: string
+            example: 'IN'
+      lang:
+        type: string
+        example: 'en-us'
+  ZoneEditApiBody:
+    type: 'object'
+    required:
+     - zoneObj
+     - lang
+    properties: 
+      zoneObj:
+        type: object
+        required:
+         - name
+         - geoFence
+         - searchingRadius
+         - distanceUnit
+         - countryCode
+        properties: 
+          name:
+           type: string
+           example: 'Zone 1'
+          geoFence:
+           type: object
+           properties: 
+            type:
+              type: string
+              example: 'Point'
+            coordinates:
+              type: array
+              items:
+               type: number
+               description: 'logitude, latitude'
+              example: [88,129]
+          searchingRadius:
+            type: number
+            example: 2
+          currency:
+            type: string
+            description: 'USD, INR'
+            example: USD
+          distanceUnit:
+            type: number
+            example: 1
+          sosContactNo:
+            type: string
+            example: '+91 987654310'
+          countryCode:
+            type: string
+            example: 'IN'
+      lang:
+        type: string
+        example: 'en-us'
+  ZoneApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+         type: 'object'
+         properties: 
+          name:
+           type: object
+           properties:
+             en-us:
+              type: string
+              example: 'Zone 1'
+          geoFence:
+           type: object
+           properties: 
+            type:
+              type: string
+              example: 'Point'
+            coordinates:
+              type: array
+              items:
+               type: number
+               description: 'logitude, latitude'
+              example: [88,129]
+          searchingRadius:
+            type: number
+            example: 2
+          currency:
+            type: string
+            description: 'USD, INR'
+            example: USD
+          distanceUnit:
+            type: number
+            example: 1
+          sosContactNo:
+            type: string
+            example: '+91 987654310'
+          countryCode:
+            type: string
+            example: 'IN'
+  ZoneListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: 'object'
+            properties: 
+              name:
+               type: object
+               properties:
+                 en-us:
+                  type: string
+                  example: 'Zone 1'
+              geoFence:
+               type: object
+               properties: 
+                type:
+                  type: string
+                  example: 'Point'
+                coordinates:
+                  type: array
+                  items:
+                   type: number
+                   description: 'logitude, latitude'
+                  example: [88,129]
+              searchingRadius:
+                type: number
+                example: 2
+              currency:
+                type: number
+                description: 'USD, INR'
+                example: USD
+              distanceUnit:
+                type: number
+                example: 1
+              sosContactNo:
+                type: string
+                example: '+91 987654310'
+              countryCode:
+                type: string
+                example: 'IN'
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+          
+  #Trip
+  TripListApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties: 
+      data:
+       type: array
+       items:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           phone:
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               type: string
+               example: '9078563421'
+           _id:
+            type: string
+         driver:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           phone:
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               type: string
+               example: '9078563421'
+           _id:
+            type: string
+         vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: object
+            properties:
+              en-us:
+                type: string
+                example: suv
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         isScheduled: 
+          type: boolean
+          example: false
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.' 
+      skip: 
+       type: number
+       example: 0
+      limit: 
+       type: number
+       example: 10
+      total: 
+       type: number
+       example: 10
+  TripDetailsApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data: 
+      type: object
+      properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           phone:
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               type: string
+               example: '9078563421'
+           _id:
+            type: string
+         driver:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           phone:
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               type: string
+               example: '9078563421'
+           _id:
+            type: string
+         vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: object
+            properties:
+              en-us:
+                type: string
+                example: suv
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         isScheduled: 
+          type: boolean
+          example: false
+         travelDistance:
+          type: object
+          properties:
+            requested:
+              type: number
+              example: 2
+            actual:
+             type: number
+             example: 4
+         pathImageUrl:
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         paymentInfo:
+           type: object
+           properties:
+            promoAmount:
+             type: number
+             example: 2
+            systemSharePercentage:
+             type: number
+             example: 2            
+            driverPayableAmount:
+             type: number
+             example: 2            
+            riderPayableAmount:
+             type: number
+             example: 2
+            tripAmount:
+             type: number
+             example: 2
+         cancelInfo:
+           type: object
+           properties:
+              cancelTime:
+               type: string
+               example: '2018-05-03T07:16:08.901Z'
+              cancelReason:
+               type: string
+               example: 'Driver Cancel'
+              noShowDriverLocation:
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+              noShowRiderLocation: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]               
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.'         
+          
+  #Revenue
+  CompletedTripsApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: true
+    data:
+      type: object
+      properties:
+        noOfCompletedTrips:
+          type: number
+          example: 30
+  CountOfDifferentEntityApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+      noOfRiders:
+       type: number
+       example: 5
+      noOfDrivers:
+       type: number
+       example: 5
+         
+  #Role
+  AddRoleApiBody:
+   type: object
+   required:
+    - name
+    - permissions
+   properties:
+    name:
+     type: string
+     example: 'Role A'
+    permissions:
+     type: array
+     items:
+        type: object
+        required:
+          - moduleName
+          - role
+        properties:
+         moduleName:
+           type: string
+           example: 'Module A'
+         role:
+           type: number
+           example: 1
+  RoleApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties:
+      _id:
+       type: string
+       example: '501d86090d371bab2c0341c5'
+      name:
+       type: string
+       example: 'Role A'
+      permissions:
+       type: array
+       items:
+         type: object
+         properties:
+            moduleName:
+              type: string
+              example: 'Module A'
+            role:
+              type: number
+              example: 1
+  RoleListApiResponse: 
+    type: object
+    properties:
+      success:
+       type: boolean
+       default: true
+      data:
+        type: object
+        properties:
+          data:
+           type: array
+           items:
+             type: object
+             properties:
+              _id:
+               type: string
+               example: '501d86090d371bab2c0341c5'
+              name:
+               type: string
+               example: 'Role A'
+              permissions:
+               type: array
+               items:
+                 type: object
+                 properties:
+                  moduleName:
+                    type: string
+                    example: 'Module A'
+                  role:
+                    type: number
+                    example: 1
+          total:
+           type: number
+           example: 10
+          limit:
+           type: number
+           example: 10
+          skip:
+            type: number
+            example: 1
+  RoleEditApiBody:
+   type: object
+   properties:
+    name:
+     type: string
+     example: 'Role A'
+    permissions:
+     type: array
+     items:
+       type: object
+       properties:
+        moduleName:
+          type: string
+          example: 'Module A'
+        role:
+          type: number
+          example: 1
+  #Admin User
+  AdminUserApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          _id:
+            type: string
+            format: mongooseId
+          personalInfo:
+            type: 'object'
+            properties:
+              firstName:
+               type: string
+               example: 'Goutam'
+              lastName:
+               type: string
+               example: 'Singha'
+              fullName:
+               type: string
+               example: 'Goutam Singha'
+              profilePicture:
+               type: string
+               format: url
+               example: 'https://dummyimage.com/600x400/000/fff'
+              email:
+               type: string
+               format: email
+               example: 'goutam.singha@innofied.com'
+          roleInfo:
+            type: 'object'
+            properties:
+              isSuperAdmin:
+               type: boolean
+               default: false
+              roleId:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: '501d86090d371bab2c0341c5'
+                  name:
+                    type: string
+                  permissions:
+                     type: array
+                     items:
+                      type: object
+                      properties:
+                        moduleName:
+                           type: string
+                           example: 'Module Name 1'
+                        role:
+                           type: number
+                           example: 1
+          accountStatus:
+           type: number
+           example: 1
+          settings:
+            type: 'object'
+            properties:
+             selectedLanguage:
+              type: string
+              example: 'en-us'
+  AdminUserListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: 'object'
+            properties:
+              success:
+                type: boolean
+                default: true
+              data: 
+                type: 'object'
+                properties:
+                  _id:
+                    type: string
+                    format: mongooseId
+                  personalInfo:
+                    type: 'object'
+                    properties:
+                      firstName:
+                       type: string
+                       example: 'Goutam'
+                      lastName:
+                       type: string
+                       example: 'Singha'
+                      fullName:
+                       type: string
+                       example: 'Goutam Singha'
+                      profilePicture:
+                       type: string
+                       format: url
+                       example: 'https://dummyimage.com/600x400/000/fff'
+                      email:
+                       type: string
+                       format: email
+                       example: 'goutam.singha@innofied.com'
+                  roleInfo:
+                    type: 'object'
+                    properties:
+                      isSuperAdmin:
+                       type: boolean
+                       default: false
+                      roleId:
+                       type: string
+                       example: '501d86090d371bab2c0341c5'
+                  accountStatus:
+                   type: number
+                   example: 1
+                  settings:
+                    type: 'object'
+                    properties:
+                     selectedLanguage:
+                      type: string
+                      example: 'en-us'
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+            
+  #Complaint
+  ComplaintListApiResponse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties:
+       data: 
+        type: array
+        items:
+         type: object
+         properties:
+          _id: 
+           type: string
+          message:
+           type: string
+           example: 'Complaint'
+          trip:
+           type: object
+           properties:
+            _id:
+             type: string
+            driver:
+              type: object
+              properties:
+               firstName: 
+                type: string
+               lastName:
+                type: string
+               fullName: 
+                type: string
+               _id:
+                type: string
+            pickupAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+            dropAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+          status:
+            type: number
+            example: 1
+       skip:
+        type: number
+        example: 1
+       limit: 
+        type: number
+        example: 10
+       total: 
+        type: number
+        example: 10
+        
+  #Promo Code
+  PromoCodeAddApiBody:
+    type: object
+    required:
+     - code
+     - noOfRides
+     - promoType
+     - percentageDiscount
+     - fixedDiscout
+     - maximumDiscount
+     - expiryDate
+     - zone
+    properties:
+      code:
+       type: string
+       example: 'AXERTYU'
+      noOfRides:
+       type: number
+       example: 1
+      promoType:
+       type: number
+       example: 2
+      percentageDiscount:
+        type: number
+        example: 10
+      fixedDiscout:
+        type: number
+        example: 10
+      maximumDiscount:
+        type: number
+        example: 10
+      expiryDate:
+        type: string
+        example: '2018-05-07T14:22:08.366Z'
+      zone:
+        type: string
+        example: '501d86090d371bab2c0341c5'
+  PromoCodeEditApiBody:
+    type: object
+    properties:
+      code:
+       type: string
+       example: 'AXERTYU'
+      noOfRides:
+       type: number
+       example: 1
+      promoType:
+       type: number
+       example: 2
+      percentageDiscount:
+        type: number
+        example: 10
+      fixedDiscout:
+        type: number
+        example: 10
+      maximumDiscount:
+        type: number
+        example: 10
+      expiryDate:
+        type: string
+        example: '2018-05-07T14:22:08.366Z'
+      zone:
+        type: string
+        example: '501d86090d371bab2c0341c5'
+  PromoCodeApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: object
+        properties:
+          code:
+           type: string
+           example: 'AXERTYU'
+          noOfRides:
+           type: number
+           example: 1
+          promoType:
+           type: number
+           example: 2
+          percentageDiscount:
+            type: number
+            example: 10
+          fixedDiscout:
+            type: number
+            example: 10
+          maximumDiscount:
+            type: number
+            example: 10
+          expiryDate:
+            type: string
+            example: '2018-05-07T14:22:08.366Z'
+          zone:
+            type: string
+            example: '501d86090d371bab2c0341c5'
+  PromoCodeListApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: boolean
+        default: true
+      data: 
+        type: 'object'
+        properties:
+          data: 
+           type: 'array'
+           items : 
+            type: object
+            properties:
+              code:
+               type: string
+               example: 'AXERTYU'
+              noOfRides:
+               type: number
+               example: 1
+              promoType:
+               type: number
+               example: 2
+              percentageDiscount:
+                type: number
+                example: 10
+              fixedDiscout:
+                type: number
+                example: 10
+              maximumDiscount:
+                type: number
+                example: 10
+              expiryDate:
+                type: string
+                example: '2018-05-07T14:22:08.366Z'
+              zone:
+                type: string
+                example: '501d86090d371bab2c0341c5'
+          skip:
+           type: number
+          limit: 
+            type: number
+          total: 
+            type: number
+            
+  #Notification
+  NotificationListApiResponse:
+   type: object
+  NotificationApiResponse:
+   type: object
+  NoticationEditApiBody:
+   type: object
+  
+  #Subsciption
+  SubscriptionPlanListApiResponse:
+    type: object
+    properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: object
+      properties: 
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+             planName:
+              type: string
+              example: 'Plan A'
+             distancePerMonth:
+              type: number
+              example: 200
+             pricePerDistanceUnit:
+              type: number
+              example: 20
+             distanceUnit:
+              type: number
+              example: 10
+             nonExclusive:
+              type: object
+              properties:
+                price:
+                 type: number
+                 example: 20
+                planId:
+                 type: string
+                 example: 'qwertyu'
+             addOn:
+              type: object
+              properties:
+               exclusive:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+               pets:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10                  
+               priorityBooking:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+             initialChargePerRide:
+               type: number
+               example: 10
+             status:
+               type: number
+               example: 1
+             isFree:
+               type: boolean
+               example: true
+        skip:
+         type: number
+         example: 0
+        limit:
+         type: number
+         example: 10
+        total:
+         type: number
+         example: 10
+  SubscriptionPlanApiBody:
+   type: object
+   required:
+    - planName
+    - distancePerMonth
+    - pricePerDistanceUnit
+    - distanceUnit
+    - nonExclusive
+    - addOn
+    - initialChargePerRide
+   properties:
+    planName:
+     type: string
+     example: 'Plan A'
+    distancePerMonth:
+     type: number
+     example: 100
+    pricePerDistanceUnit:
+     type: number
+     example: 20
+    distanceUnit:
+     type: number
+     example: 1
+    nonExclusive:
+     type: object
+     properties:
+      price:
+       type: number
+       example: 60
+    addOn:
+     type: object
+     required: 
+     - exclusive
+     - pets
+     - priorityBooking
+     properties:
+      exclusive:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20
+        surchargePercentage:
+         type: number
+         example: 30
+      pets:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20
+        surchargePercentage:
+         type: number
+         example: 30 
+      priorityBooking:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20
+        surchargePercentage:
+         type: number
+         example: 30
+    initialChargePerRide:
+     type: number
+     example: 10
+
+  SubscriptionPlanApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: false
+    data:
+     type: object
+     properties:
+      _id:
+       type: string
+       example: '123456qwertyu'
+      planName:
+       type: string
+       example: 'Plan A'
+      distancePerMonth:
+       type: number
+       example: 100
+      pricePerDistanceUnit:
+       type: number
+       example: 20
+      distanceUnit:
+       type: number
+       example: 1
+      nonExclusive:
+       type: object
+       properties:
+        price:
+         type: number
+         example: 60
+      addOn:
+       type: object
+       properties:
+        exclusive:
+         type: object
+         properties: 
+          price:
+           type: number
+           example: 20
+          surchargePercentage:
+           type: number
+           example: 30
+        pets:
+         type: object
+         properties: 
+          price:
+           type: number
+           example: 20
+          surchargePercentage:
+           type: number
+           example: 30 
+        priorityBooking:
+         type: object
+         properties: 
+          price:
+           type: number
+           example: 20
+          surchargePercentage:
+           type: number
+           example: 30
+      initialChargePerRide:
+       type: number
+       example: 10
+      currencyCode:
+       type: string
+       example: EUR
+      status:
+       type: number
+       example: 1
+      isFree:
+       type: boolean
+       example: true
+       
+  SubscriptionPlanEditApiBody:
+   type: object
+   properties:
+    planName:
+     type: string
+     example: 'Plan A'
+    distancePerMonth:
+     type: number
+     example: 100
+    pricePerDistanceUnit:
+     type: number
+     example: 20
+    nonExclusive:
+     type: object
+     properties:
+      price:
+       type: number
+       example: 60
+    addOn:
+     type: object
+     properties:
+      exclusive:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20
+      pets:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20 
+      priorityBooking:
+       type: object
+       properties: 
+        price:
+         type: number
+         example: 20
+    initialChargePerRide:
+     type: number
+     example: 10
+  LiveGeoLocationApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: false
+    data:
+     type: object
+     properties:
+      _id:
+       type: string
+      rider:
+       type: string
+       example: 'assdasdasdsd'
+      locationInfo:
+       type: array
+       items:
+        type: object
+        properties:
+          currentTime:
+           type: string
+           example: "2018-08-07T10:01:59.570Z"
+          geoLocation:
+           type: array
+           items:
+            type: number
+           example: [90, 109]
+       

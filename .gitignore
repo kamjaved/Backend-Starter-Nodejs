@@ -1,0 +1,7 @@
+node_modules
+api/docs/admin/node_modules
+api/docs/driver/node_modules
+api/docs/rider/node_modules
+api/docs/jsdoc/render
+../backend-build
+.env

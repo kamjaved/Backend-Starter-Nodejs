@@ -1,0 +1,13 @@
+extends index.pug
+block content
+  h2(style="margin:0;margin-bottom:30px;font-family:'Open Sans','Helvetica Neue','Helvetica',Helvetica,Arial,sans-serif;font-weight:300;line-height:1.5;font-size:22px;color:#294661!important") #{greeting} 
+    span(style="text-transform: capitalize;")
+      | #{firstName}
+  p(style="margin:0;margin-bottom:30px;color:#294661;font-family:'Open Sans','Helvetica Neue','Helvetica',Helvetica,Arial,sans-serif;font-size:16px;font-weight:300")
+  | #{message}
+  br
+  br
+  span(style="display: block;font-family:'Open Sans','Helvetica Neue','Helvetica',Helvetica,Arial,sans-serif;font-size:16px;font-weight:300;")  #{otpText}: #{otp}
+  br
+  br    
+  include includes/foot.pug

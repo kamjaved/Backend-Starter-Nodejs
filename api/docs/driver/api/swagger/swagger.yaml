@@ -1,0 +1,3464 @@
+swagger: '2.0'
+info:
+  title: 'Bemup Driver API Documents'
+  description: 'API Documents have been created by Swagger'
+  version: '1.0.0'
+  contact:
+    email: 'goutam.singha@innofied.com'
+host: '192.168.0.16:8000'
+basePath: '/api/v1'
+schemes:
+- 'http'
+parameters:
+  DeviceID:
+    name: x-auth-deviceid
+    type: string
+    description: 'Device ID'
+    in: header
+    required: true
+  DeviceType:
+    name: x-auth-devicetype
+    type: string
+    description: 'Device Type'
+    in: header
+    required: true
+  Longitude:
+    name: x-auth-longitude
+    type: string
+    description: 'Longitude'
+    in: header
+    required: true
+  Latitude:
+    name: x-auth-latitude
+    type: string
+    description: 'Latitude'
+    in: header
+    required: true
+  Token:
+    name: x-auth-token
+    type: string
+    description: 'Auth Token'
+    in: header
+    required: true
+  Skip: 
+    in: 'query'
+    name: 'skip'
+    type: 'string'
+    minimum: 0
+    description: 'The Skip'
+  Limit:
+    in: 'query'
+    name: 'limit'
+    type: 'string'
+    minimum: 0
+    description: 'The Limit'
+  TripId: 
+    in: 'path'
+    name: 'tripId'
+    required: true
+    type: 'string'
+    description: 'Trip Id'
+
+paths:
+  ################################################################
+  # Driver APIs                                                  #
+  ################################################################
+  # Login APIs
+  /driver/auth/login:
+    post:
+      tags:
+      - 'Driver Auth'
+      summary: 'Login to Driver Application'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Login credentials that needs to be authenticated to the Mobile Application'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverLoginApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+           $ref: '#/definitions/DriverLoginApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  # Forgot Password APIs
+  /driver/auth/forgot-password/request-otp:
+    post:
+      tags:
+      - 'Driver Auth'
+      summary: 'Request Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverForgotPasswordRequestOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /driver/auth/forgot-password/verify-otp:
+    post:
+      tags:
+      - 'Driver Auth'
+      summary: 'Verify Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverForgotPasswordVerifyOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  # Profile APIs
+  /account/driver/profile:
+    get:
+      tags:
+      - 'Driver Profile'
+      summary: 'Get Profile Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverProfileApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags:
+      - 'Driver Profile'
+      summary: 'Edit Profile Information'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'formData'
+        name: 'profileImage'
+        type: file
+        description: The file to upload.
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        format: email
+        description: 'Email'
+      - in: 'formData'
+        name: 'licenseDocumentFront'
+        type: file
+        description: 'Licence Document Front'
+        required: true
+      - in: 'formData'
+        name: 'licenseDocumentBack'
+        type: file
+        description: 'Licence Document Back'
+        required: true
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/driver/profile/change-password:
+    put:
+      tags:
+      - 'Driver Profile'
+      summary: 'Change Password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Password API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverChangePasswordApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/driver/profile/change-phone/request-otp:
+    put:
+      tags:
+      - 'Driver Profile'
+      summary: 'Change Phone Number - Request OTP'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Phone Number Request API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverChangePhoneNumberRequestApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/driver/profile/change-phone/verify-otp:
+    put:
+      tags:
+      - 'Driver Profile'
+      summary: 'Change Phone Number - Verify Otp'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Phone Number API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverChangePhoneNumberVerifyApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/driver/profile/logout:
+    put:
+      tags:
+      - 'Driver Profile'
+      summary: 'Logout'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  #Global Config API
+  /driver/global-config:
+    get:
+      tags:
+      - 'GLobal Settings'
+      summary: 'Get Global Settings'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/GlobalConfigApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'  
+          
+  #Home APIs
+  /account/driver/home/status:
+    get:
+      tags:
+      - 'Driver Home'
+      summary: 'Get Status'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverHomeStatusApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'    
+  /account/driver/home/location:
+     put:
+      tags:
+      - 'Driver Home'
+      summary: 'Update Location'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Angle'
+        required: true
+        schema:
+          type: object
+          properties:
+           angle: 
+            type: number
+            example: 20
+           offlineLocation:
+            type: array
+            items:
+             type: array
+             items:
+              type: number
+             example: [88, 12]
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            type: object
+            properties:
+             isOutsideZone:
+              type: boolean
+              default: false
+             isDifferentZone:
+              type: boolean
+              default: false
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'  
+  
+   #Trip APIs
+   
+  #Trip 
+  /account/driver/trip/{tripId}/accept:
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Accept Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Driver Trip Accept Api Body'
+        required: true
+        schema:
+         $ref: '#/definitions/DriverTripAcceptApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripAcceptApiResonse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/reject:
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Reject Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/pickup:  
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Arrived at Pickup'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripPickupApiResonse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/start:  
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Start Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: body
+        name: body
+        required: true
+        schema:
+         type: object
+         required:
+          - actualPickupAddress
+         properties:
+          actualPickupAddress:
+           type: string
+           example: "SS Road, Kolkata"
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripStartApiResonse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/end:
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'End Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: body
+        name: body
+        required: true
+        schema:
+         type: object
+         required:
+          - actualDropAddress
+         properties:
+          actualDropAddress:
+           type: string
+           example: "SS Road, Kolkata"
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripEndApiResonse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/cancel:  
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Cancel Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Cancel Reason API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverTripCancelReasonApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripCancelApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/list:
+    get:
+      tags:
+      - 'Rider Trip'
+      summary: 'Get Trip List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}:
+    get:
+      tags:
+      - 'Rider Trip'
+      summary: 'Get Trip Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/DriverTripDetailsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/driver/trip/{tripId}/feedback:
+    post:
+      tags:
+      - 'Rider Trip'
+      summary: 'Send Feedback and Rating'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Feedback Rating API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/DriverBookingFeedbackRatingApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'          
+
+          
+definitions:
+  ########################################
+  # API Common API Body and Responses    #
+  ########################################
+  SuccessApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: 'boolean'
+        default: true
+  ########################################
+  # Driver API Responses                 #
+  ########################################
+  
+  DriverLoginApiBody:
+    type: 'object'
+    properties:
+      phone:
+        type: 'object'
+        properties: 
+          countryCode:
+            type: string
+          number: 
+            type: string
+      password: 
+        type: 'string'
+  DriverLoginApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+      data:
+        type: 'object'
+        properties: 
+          token: 
+            type: 'string'
+          user:
+            type: 'object'
+            properties:
+             personalInfo:
+              type: object
+              properties: 
+               email:
+                type: 'string'
+                format: 'email'
+               firstName: 
+                type: 'string'
+               lastName: 
+                type: 'string'
+               fullName: 
+                type: 'string'
+               profilePicture: 
+                type: 'string'
+               phone:
+                type: object
+                properties:
+                  countryCode: 
+                    type: string
+                  number:
+                    type: string
+               address: 
+                type: object
+                properties:
+                 line:
+                  type: string
+                 city:
+                  type: string
+                 zip:
+                  type: string
+                 state:
+                  type: string
+             accountStatus: 
+                type: number
+             paymentInfo:
+              type: 'object'
+              properties:
+                payment:
+                 type: array
+                 items:
+                  type: 'object'
+                  properties:
+                    id:
+                     type: string
+                     example: '5ab0aa8cc01e8b0af14bc728'
+                    status:
+                     type: number
+                     example: 1
+                    gatewayType:
+                     type: number
+                     example: 1
+                    isDefault:
+                     type: boolean
+                     example: true
+            
+  DriverForgotPasswordRequestOTPApiBody:
+    type: 'object'
+    properties:
+      phone:
+        type: 'object'
+        properties: 
+          countryCode:
+            type: string
+            example: 'IN'
+          number: 
+            type: string
+            example: '90123456789'
+  DriverForgotPasswordVerifyOTPApiBody:
+    type: 'object'
+    properties:
+      phone:
+        type: 'object'
+        properties: 
+          countryCode:
+            type: string
+            example: 'IN'
+          number: 
+            type: string
+            example: '90876543215'
+      otp:
+       type: string
+       example: 'AQWERTY6'
+      password:
+       type: 'string'
+       example: 'TEST123#'
+       
+  DriverProfileApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+      data:
+        type: 'object'
+        properties: 
+          personalInfo:
+            type: object
+            properties: 
+              email:
+                type: 'string'
+                format: 'email'
+              firstName: 
+                type: 'string'
+              lastName: 
+                type: 'string'
+              fullName: 
+                type: 'string'
+              profilePicture: 
+                type: 'string'
+              phone:
+                type: object
+                properties:
+                  countryCode: 
+                    type: string
+                  number:
+                    type: string
+              address: 
+                type: object
+                properties:
+                 line:
+                  type: string
+                 city:
+                  type: string
+                 zip:
+                  type: string
+                 state:
+                  type: string
+          accountStatus: 
+            type: number
+          paymentInfo:
+            type: 'object'
+            properties:
+              payment:
+                type: array
+                items:
+                  type: 'object'
+                  properties:
+                    id:
+                     type: string
+                     example: '5ab0aa8cc01e8b0af14bc728'
+                    status:
+                     type: number
+                     example: 1
+                    gatewayType:
+                     type: number
+                     example: 1
+                    isDefault:
+                     type: boolean
+                     example: true          
+                     
+  DriverChangePasswordApiBody: 
+    type: object
+    properties: 
+      oldPassword: 
+        type: string
+      newPassword: 
+        type: string
+        
+  DriverChangePhoneNumberRequestApiBody:
+    type: object
+    properties: 
+      countryCode: 
+       type: string
+      number:
+       type: string
+       
+  DriverChangePhoneNumberVerifyApiBody:
+    type: object
+    properties: 
+      otp: 
+       type: string
+       
+  GlobalConfigApiResponse:
+   type: object
+   properties:
+    success: 
+      type: boolean
+      default: true
+    data: 
+      type: object
+      properties:
+        termsAndCondition:
+          type: string
+          format: url
+        privacyPolicy: 
+          type: string
+          format: url
+        faq:
+          type: string
+          format: url
+        supportContactNo:
+          type: string
+        supportEmail:
+          type: string
+        referalMessageForRider: 
+          type: string
+          example: 'Message'
+        appleStoreLink:
+           type: object
+           properties:
+             rider: 
+              type: string
+             driver:
+              type: string
+        playStoreLink:
+           type: object
+           properties:
+             rider: 
+              type: string
+             driver:
+              type: string
+              
+  DriverHomeStatusApiResponse:
+   type: object
+   properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: object
+      properties:
+       ongoingTripSequence:
+        type: object
+        properties:
+          vehicleId:
+           type: object
+           properties:
+            _id:
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+            vehicleType:
+             type: object
+             properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               type: 
+                 type: string
+                 example: suv
+               status: 
+                type: number
+                example: 1
+          remainingSeats:
+           type: string
+          isRideShare:
+           type: string
+          immediatePickUp:
+           type: object
+           properties:
+            _id:
+             type: string
+            displayId:
+             type: string
+            rider:
+             type: object
+             properties:
+              _id:
+               type: string
+              displayId:
+               type: string
+               example: 'EREWYUI'
+              firstName: 
+               type: string
+              lastName:
+               type: string
+              fullName: 
+               type: string
+              phone: 
+               type: object
+               properties:
+                countryCode:
+                 type: string
+                 example: 'IN'
+                number:
+                 example: '9078563421'
+              profilePicture:
+               type: string
+               example: 'https://dummyimage.com/600x400/000/fff'
+              email:
+               type: string
+               format: email
+               example: 'goutam.singha@innofied.com'
+            requestedNumberOfSeats:
+             type: number
+             example: 10
+            travelDistance:
+             type: number
+            bookingLocation:
+             type: array
+             items:
+               type: number
+               description: 'longitude, latitude'
+             example: [88, 128]              
+            bookingAddress:
+              type: string
+              example:  '12 Street, Saltlake, Kolkata - 700091'
+            bookingTime:
+             type: string
+             example: "2018-06-01T04:50:06.558Z"
+            pickupLocation:
+              type: object
+              properties:
+               requested: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+            pickupAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+            dropLocation:
+              type: object
+              properties:
+               requested: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+            dropAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'  
+            transactionInfo:
+             type: object
+             properties:
+              mode: 
+               type: string
+               example: 1
+            tripStatus:
+             type: number
+             example: 1
+          currentDropSequence:
+           type: object
+           properties:
+            _id:
+             type: string
+            displayId:
+             type: string
+            rider:
+             type: object
+             properties:
+              _id:
+               type: string
+              displayId:
+               type: string
+               example: 'EREWYUI'
+              firstName: 
+               type: string
+              lastName:
+               type: string
+              fullName: 
+               type: string
+              phone: 
+               type: object
+               properties:
+                countryCode:
+                 type: string
+                 example: 'IN'
+                number:
+                 example: '9078563421'
+              profilePicture:
+               type: string
+               example: 'https://dummyimage.com/600x400/000/fff'
+              email:
+               type: string
+               format: email
+               example: 'goutam.singha@innofied.com'
+            requestedNumberOfSeats:
+             type: number
+             example: 10
+            travelDistance:
+             type: number
+            bookingLocation:
+             type: array
+             items:
+               type: number
+               description: 'longitude, latitude'
+             example: [88, 128]              
+            bookingAddress:
+              type: string
+              example:  '12 Street, Saltlake, Kolkata - 700091'
+            bookingTime:
+             type: string
+             example: "2018-06-01T04:50:06.558Z"
+            pickupLocation:
+              type: object
+              properties:
+               requested: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+            pickupAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+            dropLocation:
+              type: object
+              properties:
+               requested: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+            dropAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'  
+            transactionInfo:
+             type: object
+             properties:
+              mode: 
+               type: string
+               example: 1
+            tripStatus:
+             type: number
+             example: 1
+       pendingRequest:
+        type: array
+        items:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           displayId:
+            type: string
+            example: 'AWERTYB'
+           vehicleType:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             type: 
+               type: string
+               example: suv
+             status: 
+              type: number
+              example: 1
+           rider:
+            type: object
+            properties:
+             _id:
+              type: string
+             displayId:
+              type: string
+              example: 'EREWYUI'
+             firstName: 
+              type: string
+             lastName:
+              type: string
+             fullName: 
+              type: string
+             phone: 
+              type: object
+              properties:
+                countryCode:
+                 type: string
+                 example: 'IN'
+                number:
+                 example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+           requestedNumberOfSeats:
+            type: number
+            example: 3
+           travelDistance:
+            type: object
+            properties:
+             requested:
+              type: number
+              example: 20
+           bookingLocation:
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           bookingAddress:
+            type: string
+            example:  '12 Street, Saltlake, Kolkata - 700091'
+           bookingTime:
+            type: string
+            example: "2018-05-02T10:56:05.530Z"
+           pickupLocation:
+            type: object
+            properties:
+             requested: 
+              type: array
+              items:
+               type: number
+               description: 'longitude, latitude'
+              example: [88, 128]
+           pickupAddress:
+            type: object
+            properties:
+             requested: 
+               type: string
+               example:  '12 Street, Saltlake, Kolkata - 700091'
+           dropLocation:
+            type: object
+            properties:
+             requested: 
+              type: array
+              items:
+               type: number
+               description: 'longitude, latitude'
+              example: [88, 128]
+           dropAddress:
+            type: object
+            properties:
+             requested: 
+               type: string
+               example:  '12 Street, Saltlake, Kolkata - 700091'
+           isScheduled: 
+            type: boolean
+            example: false
+           broadcastTime:
+            type: string
+            example: "2018-05-02T10:56:05.530Z"
+           responseTimeout:
+            type: string
+            example: "2018-05-02T10:56:05.530Z"
+           tripStatus: 
+            type: number
+            example: 1
+            description: 'e.g. Ongoing - 1 etc.'
+       zone: 
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "5b07c5c1927a3832af7f5790"
+          searchingRadius:
+           type: number
+           example: 2
+          distanceUnit:
+           type: number
+           example: 1
+          sosContactNo: 
+           type: string
+           example: '987654310'
+          countryCode: 
+           type: string
+           example: IN
+          status: 
+           type: number
+           example: 1
+          currency:
+           type: string
+           example: "USD"
+          geoFence: 
+           type: object
+           properties: 
+            type:
+             type: string
+             example: "Polygon"
+            coordinates:
+             type: array
+             items:
+              type: array
+              items:
+               type: array
+               items:
+                type: number
+               example: [88.40698,22.78631]
+          name:
+           type: string
+           example: "kolkata saltlake"
+           
+  DriverTripAcceptApiBody: 
+   type: object
+   properties:
+    vehicleInfo:
+     type: object
+     required:
+      - _id
+      - licensePlate
+      - registrationNumber
+      - vehicleType
+      - color
+      - brand
+      - totalSeats
+      - model
+     properties: 
+      _id:
+       type: string
+       example: '5ab0aa8cc01e8b0af14bc728'
+      licensePlate:
+       type: string
+       example: 'WB431267'
+      registrationNumber:
+       type: string
+       example: 'WB654128'
+      vehicleType:
+       type: string
+       example: '5ab0aa8cc01e8b0af14bc728'
+      color:
+       type: string
+       example: '#eeeaaa'
+      brand:
+       type: string
+       example: 'brand'
+      totalSeats:
+       type: number
+       example: 3
+      model:
+       type: string
+       example: 'model'
+      yearOfManufacturing:
+       type: number
+       example: 2017
+       
+  DriverTripAcceptApiResonse: 
+   type: object
+   properties:
+    success: 
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+       tripSequenceDoc:
+        type: object
+        properties:
+         driverId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         vehicleId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         remainingSeats:
+          type: number
+          example: 2
+         tripSequenceStatus:
+          type: number
+          example: 2  
+         isRideShare:
+          type: boolean
+          example: false
+         isPetsAllowed:
+          type: boolean
+          example: true
+         immediatePickUp:
+          type: object
+          properties:
+           displayId:
+            type: string
+            example: 'DXERTYUI'
+           rider:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             displayId:
+              type: string
+              example: 'ECTYUJK'
+             firstName:
+              type: string
+              example: 'Goutam'
+             lastName:
+              type: string
+              example: 'Singha'
+             fullName:
+              type: string
+              example: 'Goutam Singha'
+             nickName:
+              type: string
+              example: 'Goutam'
+             phone: 
+              type: object
+              properties:
+               countryCode:
+                type: string
+                example: 'IN'
+               number:
+                example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+             subscriptionInfo:
+              type: object
+              properties:
+               isRideShare:
+                type: boolean
+                example: false
+               isPetsAllowed:
+                type: boolean
+                example: false
+               priorityBooking:
+                type: boolean
+                example: false
+             ratingData:
+              type: object
+              properties:
+               total:
+                type: number
+               count:
+                type: number
+           pickupLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           pickupAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           dropLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           dropAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           tripStatus:
+            type: number
+            example: 2
+         dropHistory:
+           type: string
+           example: '5ab0aa8cc01e8b0af14bc728'
+         currentDropSequence:
+          type: array
+          items:
+            type: object
+            properties:
+             displayId:
+              type: string
+              example: 'DXERTYUI'
+             rider:
+              type: object
+              properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               displayId:
+                type: string
+                example: 'ECTYUJK'
+               firstName:
+                type: string
+                example: 'Goutam'
+               lastName:
+                type: string
+                example: 'Singha'
+               fullName:
+                type: string
+                example: 'Goutam Singha'
+               nickName:
+                type: string
+                example: 'Goutam'
+               phone: 
+                type: object
+                properties:
+                 countryCode:
+                  type: string
+                  example: 'IN'
+                 number:
+                  example: '9078563421'
+               profilePicture:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+               email:
+                type: string
+                format: email
+                example: 'goutam.singha@innofied.com'
+               subscriptionInfo:
+                type: object
+                properties:
+                 isRideShare:
+                  type: boolean
+                  example: false
+                 isPetsAllowed:
+                  type: boolean
+                  example: false
+                 priorityBooking:
+                  type: boolean
+                  example: false
+               ratingData:
+                type: object
+                properties:
+                 total:
+                  type: number
+                 count:
+                  type: number
+             pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             tripStatus:
+              type: number
+              example: 2
+       tripDoc:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Singha'
+           fullName: 
+            type: string
+            example: 'Goutam Singha'
+           nickName:
+              type: string
+              example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         driver:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           address: 
+            type: object
+            properties:
+             line:
+              type: string
+             city:
+              type: string
+             zip:
+              type: string
+             state:
+              type: string
+         requestedNumberOfSeats:
+          type: number
+          example: 10
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'  
+         tripStatus:
+          type: number
+          example: 1
+          
+  DriverTripPickupApiResonse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         driver:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           address: 
+            type: object
+            properties:
+             line:
+              type: string
+             city:
+              type: string
+             zip:
+              type: string
+             state:
+              type: string
+         rider:
+          type: object
+          properties:
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Singha'
+           fullName: 
+            type: string
+            example: 'Goutam Singha'
+           nickName:
+              type: string
+              example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           _id:
+            type: string
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         requestedNumberOfSeats:
+          type: number
+          example: 10
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual:
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         tripStatus:
+          type: number
+          example: 1
+          
+  DriverTripStartApiResonse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+       tripSequenceDoc:
+        type: object
+        properties:
+         driverId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         vehicleId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         remainingSeats:
+          type: number
+          example: 2
+         tripSequenceStatus:
+          type: number
+          example: 2  
+         isRideShare:
+          type: boolean
+          example: false
+         isPetsAllowed:
+          type: boolean
+          example: true
+         immediatePickUp:
+          type: object
+          properties:
+           displayId:
+            type: string
+            example: 'DXERTYUI'
+           rider:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             displayId:
+              type: string
+              example: 'ECTYUJK'
+             firstName:
+              type: string
+              example: 'Goutam'
+             lastName:
+              type: string
+              example: 'Singha'
+             fullName:
+              type: string
+              example: 'Goutam Singha'
+             nickName:
+              type: string
+              example: 'Goutam'
+             phone: 
+              type: object
+              properties:
+               countryCode:
+                type: string
+                example: 'IN'
+               number:
+                example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+             subscriptionInfo:
+              type: object
+              properties:
+               isRideShare:
+                type: boolean
+                example: false
+               isPetsAllowed:
+                type: boolean
+                example: false
+               priorityBooking:
+                type: boolean
+                example: false
+             ratingData:
+              type: object
+              properties:
+               total:
+                type: number
+               count:
+                type: number
+           pickupLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           pickupAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           dropLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           dropAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           tripStatus:
+            type: number
+            example: 2
+         dropHistory:
+           type: string
+           example: '5ab0aa8cc01e8b0af14bc728'
+         currentDropSequence:
+          type: array
+          items:
+            type: object
+            properties:
+             displayId:
+              type: string
+              example: 'DXERTYUI'
+             rider:
+              type: object
+              properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               displayId:
+                type: string
+                example: 'ECTYUJK'
+               firstName:
+                type: string
+                example: 'Goutam'
+               lastName:
+                type: string
+                example: 'Singha'
+               fullName:
+                type: string
+                example: 'Goutam Singha'
+               nickName:
+                type: string
+                example: 'Goutam'
+               phone: 
+                type: object
+                properties:
+                 countryCode:
+                  type: string
+                  example: 'IN'
+                 number:
+                  example: '9078563421'
+               profilePicture:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+               email:
+                type: string
+                format: email
+                example: 'goutam.singha@innofied.com'
+               subscriptionInfo:
+                type: object
+                properties:
+                 isRideShare:
+                  type: boolean
+                  example: false
+                 isPetsAllowed:
+                  type: boolean
+                  example: false
+                 priorityBooking:
+                  type: boolean
+                  example: false
+               ratingData:
+                type: object
+                properties:
+                 total:
+                  type: number
+                 count:
+                  type: number
+             pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             tripStatus:
+              type: number
+              example: 2
+       tripDoc:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Singha'
+           fullName: 
+            type: string
+            example: 'Goutam Singha'
+           nickName:
+              type: string
+              example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         driver:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           address: 
+            type: object
+            properties:
+             line:
+              type: string
+             city:
+              type: string
+             zip:
+              type: string
+             state:
+              type: string
+         requestedNumberOfSeats:
+          type: number
+          example: 10
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'  
+         tripStatus:
+          type: number
+          example: 1
+          
+  DriverTripEndApiResonse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+       tripSequenceDoc:
+        type: object
+        properties:
+         driverId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         vehicleId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         remainingSeats:
+          type: number
+          example: 2
+         tripSequenceStatus:
+          type: number
+          example: 2  
+         isRideShare:
+          type: boolean
+          example: false
+         isPetsAllowed:
+          type: boolean
+          example: true
+         immediatePickUp:
+          type: object
+          properties:
+           displayId:
+            type: string
+            example: 'DXERTYUI'
+           rider:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             displayId:
+              type: string
+              example: 'ECTYUJK'
+             firstName:
+              type: string
+              example: 'Goutam'
+             lastName:
+              type: string
+              example: 'Singha'
+             fullName:
+              type: string
+              example: 'Goutam Singha'
+             nickName:
+              type: string
+              example: 'Goutam'
+             phone: 
+              type: object
+              properties:
+               countryCode:
+                type: string
+                example: 'IN'
+               number:
+                example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+           pickupLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           pickupAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           dropLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           dropAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           tripStatus:
+            type: number
+            example: 2
+         dropHistory:
+           type: string
+           example: '5ab0aa8cc01e8b0af14bc728'
+         currentDropSequence:
+          type: array
+          items:
+            type: object
+            properties:
+             displayId:
+              type: string
+              example: 'DXERTYUI'
+             rider:
+              type: object
+              properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               displayId:
+                type: string
+                example: 'ECTYUJK'
+               firstName:
+                type: string
+                example: 'Goutam'
+               lastName:
+                type: string
+                example: 'Singha'
+               fullName:
+                type: string
+                example: 'Goutam Singha'
+               nickName:
+                type: string
+                example: 'Goutam'
+               phone: 
+                type: object
+                properties:
+                 countryCode:
+                  type: string
+                  example: 'IN'
+                 number:
+                  example: '9078563421'
+               profilePicture:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+               email:
+                type: string
+                format: email
+                example: 'goutam.singha@innofied.com'
+               subscriptionInfo:
+                type: object
+                properties:
+                 isRideShare:
+                  type: boolean
+                  example: false
+                 isPetsAllowed:
+                  type: boolean
+                  example: false
+                 priorityBooking:
+                  type: boolean
+                  example: false
+               ratingData:
+                type: object
+                properties:
+                 total:
+                  type: number
+                 count:
+                  type: number
+             pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             tripStatus:
+              type: number
+              example: 2
+       tripDoc:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Singha'
+           nickName:
+              type: string
+              example: 'Goutam'
+           fullName: 
+            type: string
+            example: 'Goutam Singha'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         driver:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           address: 
+            type: object
+            properties:
+             line:
+              type: string
+             city:
+              type: string
+             zip:
+              type: string
+             state:
+              type: string
+         requestedNumberOfSeats:
+          type: number
+          example: 10
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'  
+         tripStatus:
+          type: number
+          example: 1
+  
+  DriverTripCancelApiResponse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties:
+       tripSequenceDoc:
+        type: object
+        properties:
+         driverId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         vehicleId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         remainingSeats:
+          type: number
+          example: 2
+         tripSequenceStatus:
+          type: number
+          example: 2  
+         isRideShare:
+          type: boolean
+          example: false
+         isPetsAllowed:
+          type: boolean
+          example: true
+         immediatePickUp:
+          type: object
+          properties:
+           displayId:
+            type: string
+            example: 'DXERTYUI'
+           rider:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             displayId:
+              type: string
+              example: 'ECTYUJK'
+             firstName:
+              type: string
+              example: 'Goutam'
+             lastName:
+              type: string
+              example: 'Singha'
+             fullName:
+              type: string
+              example: 'Goutam Singha'
+             nickName:
+              type: string
+              example: 'Goutam'
+             phone: 
+              type: object
+              properties:
+               countryCode:
+                type: string
+                example: 'IN'
+               number:
+                example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+           pickupLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           pickupAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           dropLocation:
+            type: object
+            properties:
+              requested:
+                type: array
+                items:
+                 type: number
+                example: [88,22]   
+              actual:
+                type: array
+                items:
+                 type: number
+                example: [88,22]
+           dropAddress:
+            type: object
+            properties:
+              requested:
+                type: string
+                example: 'SS Road, Kolkata'
+              actual:
+                type: string
+                example: 'SS Road, Kolkata'
+           tripStatus:
+            type: number
+            example: 2
+         dropHistory:
+           type: string
+           example: '5ab0aa8cc01e8b0af14bc728'
+         currentDropSequence:
+          type: array
+          items:
+            type: object
+            properties:
+             displayId:
+              type: string
+              example: 'DXERTYUI'
+             rider:
+              type: object
+              properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               displayId:
+                type: string
+                example: 'ECTYUJK'
+               firstName:
+                type: string
+                example: 'Goutam'
+               lastName:
+                type: string
+                example: 'Singha'
+               fullName:
+                type: string
+                example: 'Goutam Singha'
+               nickName:
+                type: string
+                example: 'Goutam'
+               phone: 
+                type: object
+                properties:
+                 countryCode:
+                  type: string
+                  example: 'IN'
+                 number:
+                  example: '9078563421'
+               profilePicture:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+               email:
+                type: string
+                format: email
+                example: 'goutam.singha@innofied.com'
+               subscriptionInfo:
+                type: object
+                properties:
+                 isRideShare:
+                  type: boolean
+                  example: false
+                 isPetsAllowed:
+                  type: boolean
+                  example: false
+                 priorityBooking:
+                  type: boolean
+                  example: false
+               ratingData:
+                type: object
+                properties:
+                 total:
+                  type: number
+                 count:
+                  type: number
+             pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             tripStatus:
+              type: number
+              example: 2
+       tripDoc:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Singha'
+           fullName: 
+            type: string
+            example: 'Goutam Singha'
+           nickName:
+              type: string
+              example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         driver:
+          type: object
+          properties:
+           _id:
+            type: string
+           displayId:
+            type: string
+            example: 'EREWYUI'
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           email:
+            type: string
+            format: email
+            example: 'goutam.singha@innofied.com'
+           address: 
+            type: object
+            properties:
+             line:
+              type: string
+             city:
+              type: string
+             zip:
+              type: string
+             state:
+              type: string
+         requestedNumberOfSeats:
+          type: number
+          example: 10
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'  
+         tripStatus:
+          type: number
+          example: 1
+ 
+  DriverTripListApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties: 
+      data:
+       type: array
+       items:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           firstName: 
+            type: string
+            example: 'Goutam'
+           lastName:
+            type: string
+            example: 'Goutam'
+           fullName: 
+            type: string
+            example: 'Goutam'
+           nickName:
+            type: string
+            example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           _id:
+            type: string
+           subscriptionInfo:
+            type: object
+            properties:
+             isRideShare:
+              type: boolean
+              example: false
+             isPetsAllowed:
+              type: boolean
+              example: false
+             priorityBooking:
+              type: boolean
+              example: false
+           ratingData:
+            type: object
+            properties:
+             total:
+              type: number
+             count:
+              type: number
+         vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: string
+            example: suv
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         isScheduled: 
+          type: boolean
+          example: false
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.' 
+      skip: 
+       type: number
+       example: 0
+      limit: 
+       type: number
+       example: 10
+      total: 
+       type: number
+       example: 10
+ 
+  DriverTripDetailsApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data: 
+      type: object
+      properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         rider:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           nickName:
+            type: string
+            example: 'Goutam'
+           phone: 
+            type: object
+            properties:
+              countryCode:
+               type: string
+               example: 'IN'
+              number:
+               example: '9078563421'
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           _id:
+            type: string
+         vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: string
+            example: suv
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         isScheduled: 
+          type: boolean
+          example: false
+         travelDistance:
+          type: object
+          properties:
+            requested:
+              type: number
+              example: 2
+            actual:
+             type: number
+             example: 4
+         pathImageUrl:
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         paymentInfo:
+           type: object
+           properties:
+            promoAmount:
+             type: number
+             example: 2
+            systemSharePercentage:
+             type: number
+             example: 2            
+            driverPayableAmount:
+             type: number
+             example: 2            
+            riderPayableAmount:
+             type: number
+             example: 2
+            tripAmount:
+             type: number
+             example: 2
+         cancelInfo:
+           type: object
+           properties:
+              cancelTime:
+               type: string
+               example: '2018-05-03T07:16:08.901Z'
+              cancelReason:
+               type: string
+               example: 'Driver Cancel'
+              noShowDriverLocation:
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+              noShowRiderLocation: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]               
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.'         
+ 
+  DriverTripCancelReasonApiBody:
+   type: object
+   properties:
+     cancelInfo:
+      type: object
+      properties:
+        cancelReason: 
+         type: string
+         example: 'Canceled Reason'
+        noShowDriverLocation:
+          type: array
+          items:
+             type: number
+             description: 'longitude, latitude'
+          example: [88, 128]      
+ 
+  DriverBookingFeedbackRatingApiBody:
+   type: object
+   properties:
+    feedback: 
+     type: string
+     example: 'excellent feedback'
+    rating: 
+     type: number
+     example: 5

@@ -1,0 +1,18 @@
+{
+  "name": "driverapidocs",
+  "version": "1.0.0",
+  "description": "Driver API Documents",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "swagger-ui-express": "^3.0.9",
+    "open": "0.0.5",
+    "yamljs": "^0.3.0",
+    "find-free-port": "^2.0.0"
+  }
+}

@@ -1,0 +1,3501 @@
+swagger: '2.0'
+info:
+  title: 'Bemup Rider API Documents'
+  description: 'API Documents have been created by Swagger'
+  version: '1.0.0'
+  contact:
+    email: 'goutam.singha@innofied.com'
+# host: 'localhost:8000'
+host: 'ec2-34-243-205-187.eu-west-1.compute.amazonaws.com:7000'
+basePath: '/api/v1'
+schemes:
+- 'http'
+parameters:
+  DeviceID:
+    name: x-auth-deviceid
+    type: string
+    description: 'Device ID'
+    in: header
+    required: true
+  DeviceType:
+    name: x-auth-devicetype
+    type: string
+    description: 'Device Type'
+    in: header
+    required: true
+  Longitude:
+    name: x-auth-longitude
+    type: string
+    description: 'Longitude'
+    in: header
+    required: true
+  Latitude:
+    name: x-auth-latitude
+    type: string
+    description: 'Latitude'
+    in: header
+    required: true
+  Token:
+    name: x-auth-token
+    type: string
+    description: 'Auth Token'
+    in: header
+    required: true
+  Skip: 
+    in: 'query'
+    name: 'skip'
+    type: 'string'
+    minimum: 0
+    description: 'The Skip'
+  Limit:
+    in: 'query'
+    name: 'limit'
+    type: 'string'
+    minimum: 0
+    description: 'The Limit'
+  AddressId:
+    in: 'path'
+    name: 'addressId'
+    required: true
+    type: 'string'
+    description: 'Address Id'
+  BookingId: 
+    in: 'path'
+    name: 'bookingId'
+    required: true
+    type: 'string'
+    description: 'Booking Id'
+  TripId: 
+    in: 'path'
+    name: 'tripId'
+    required: true
+    type: 'string'
+    description: 'Trip Id'
+  CardId: 
+    in: 'path'
+    name: 'cardId'
+    required: true
+    type: 'string'
+    description: 'Card Id'
+  SubscriptionId:
+    in: 'path'
+    name: 'subscriptionId'
+    required: true
+    type: 'string'
+    description: 'Subscription Id'
+  SourceToken:
+    in: 'path'
+    name: 'sourceToken'
+    required: true
+    type: 'string'
+    description: 'Source token'
+paths:
+  ################################################################
+  # Rider APIs                                                  #
+  ################################################################
+  # Signup APIs
+  /rider/auth/signup/request-otp: 
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Sign up Rider - Send Otp'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'formData'
+        name: 'profileImage'
+        type: 'file'
+        description: 'Profile Image'
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+        required: true
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+        required: true
+      - in: 'formData'
+        name: 'phoneCountryCode'
+        type: 'string'
+        description: 'Country Code for Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'phoneNumber'
+        type: 'string'
+        description: 'Phone Number'
+        required: true
+      - in: 'formData'
+        name: 'email'
+        type: 'string'
+        format: 'email'
+        description: 'Email'
+        required: true
+      - in: 'formData'
+        name: 'password'
+        type: 'string'
+        description: 'Password'
+      - in: 'formData'
+        name: 'loginType'
+        type: 'string'
+        description: 'Login Type - Custom - 1, Facebook - 2, Twitter - 3'
+      - in: 'formData'
+        name: 'socialId'
+        type: 'string'
+        description: 'Social Id'
+      - in: 'formData'
+        name: 'timeZoneOffset'
+        type: 'string'
+        required: true
+        description: 'Timezone offset'
+      - in: 'formData'
+        name: 'referralCode'
+        type: 'string'
+        description: 'Referal Code'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSignupRequestApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/signup/resend-otp: 
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Sign Up Rider - Resend Otp'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: body
+        name: body
+        required: true
+        description: 'Sign Up Resend API Body'
+        schema: 
+          type: object
+          required: 
+           - _id
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSignupRequestApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/signup/verify-otp: 
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Sign up Rider - Verify OTP'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Sign Up Verify API Body'
+        required: true
+        schema: 
+          $ref: '#/definitions/RiderSignupVerifyApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSignupVerifyApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/signup/select-payment-gateway: 
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Sign up Rider - Select Payment Gateway'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Sign Up Select Payment gateway by Rider'
+        required: true
+        schema: 
+          $ref: '#/definitions/RiderSignupSelectPaymentGatewayApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSignupSelectPaymentGatewayApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/signup/link-card: 
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Sign up Rider - Link Card'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Sign Up Link Card API Body'
+        required: true
+        schema: 
+          $ref: '#/definitions/RiderSignupLinkCardApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+           $ref: '#/definitions/RiderLoginApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+          
+  # Login APIs
+  /rider/auth/custom-login:
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Custom Login to Rider Application'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Login credentials that needs to be authenticated to the Mobile Application'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderCustomLoginApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+           $ref: '#/definitions/RiderLoginApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/social-login:
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Social Login to Rider Application'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        description: 'Login credentials that needs to be authenticated to the Mobile Application'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderSocialLoginApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+           $ref: '#/definitions/RiderLoginApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  # Forgot Password APIs
+  /rider/auth/forgot-password/request-otp:
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Request Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderForgotPasswordRequestOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /rider/auth/forgot-password/verify-otp:
+    post:
+      tags:
+      - 'Rider Auth'
+      summary: 'Verify Forgot Password OTP to set new password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - in: 'body'
+        name: 'body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderForgotPasswordVerifyOTPApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  # Profile APIs
+  /account/rider/profile:
+    get:
+      tags:
+      - 'Rider Profile'
+      summary: 'Get Profile Information'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderProfileApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Edit Profile Information'
+      consumes:
+      - 'multipart/form-data'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'formData'
+        name: 'profileImage'
+        type: file
+        description: The file to upload.
+      - in: 'formData'
+        name: 'firstName'
+        type: 'string'
+        description: 'First Name'
+      - in: 'formData'
+        name: 'lastName'
+        type: 'string'
+        description: 'Last Name'
+      - in: 'formData'
+        name: 'nickName'
+        type: 'string'
+        description: 'Nick Name'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderProfileApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/profile/change-password:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Change Password'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Password API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderChangePasswordApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/profile/change-phone/request-otp:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Change Phone Number - Request OTP'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Phone Number Request API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderChangePhoneNumberRequestApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/profile/change-phone/verify-otp:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Change Phone Number - Verify Otp'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Change Phone Number API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderChangePhoneNumberVerifyApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+          
+  /account/rider/profile/emergency-contact:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Add/Edit/Remove Emergencey Contacts'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Emergency Contact Number API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderEmergencyContactApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+          
+  /account/rider/profile/address-book:
+    post:
+      tags:
+      - 'Rider Profile'
+      summary: 'Add Address'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Address API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderAddressApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderAddressApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    get:
+      tags:
+      - 'Rider Profile'
+      summary: 'Get Address List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderAddressBookListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/profile/address-book/{addressId}:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Update Address'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/AddressId'
+      - in: 'body'
+        name: 'body'
+        description: 'Address API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderAddressApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderAddressApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+    delete:
+      tags:
+      - 'Rider Profile'
+      summary: 'Remove Address'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/AddressId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/profile/logout:
+    put:
+      tags:
+      - 'Rider Profile'
+      summary: 'Logout'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  
+  #Global Config API
+  /rider/global-config:
+    get:
+      tags:
+      - 'GLobal Settings'
+      summary: 'Get Global Settings'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/GlobalConfigApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'  
+  
+  #Home APIs
+  /account/rider/home/status:
+    get:
+      tags:
+      - 'Rider Home'
+      summary: 'Get Status'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderHomeStatusApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/home/location:
+    put:
+      tags:
+      - 'Rider Home'
+      summary: 'Update Location'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Location Info API Body'
+        required: true
+        schema:
+         type: object
+         properties:
+          geoLocation: 
+           type: array
+           items:
+            type: number
+           example: [99, 123]
+          currentTime: 
+           type: string
+           example: "2018-08-07T09:50:01.018Z"
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  
+  /account/rider/home/ongoing-trips:
+    get:
+      tags:
+      - 'Rider Home'
+      summary: 'Get Ongoing Trips'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderHomeOngoingTripStatus'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/home/alldrivers:
+    get:
+      tags:
+      - 'Rider Home'
+      summary: 'Get all drivers in range'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderHomeAllDriversApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  #Subscription APIs        
+  /account/rider/subscription/plan/list:
+    get:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Get Subscription Plan List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderHomeSubscriptionApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/subscription/add:
+    post:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Add Subscription'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderSubscriptionApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSubscriptionDetailsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/subscription/{subscriptionId}:
+    get:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Get Subscription Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderSubscriptionDetailsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+    put:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Edit Subscription Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionId'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderSubscriptionUpgradeApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/subscription/{subscriptionId}/auto-renewal:
+    put:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Auto Renewal Subscription'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionId'
+      - in: 'body'
+        name: 'body'
+        description: 'Subscription API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderSubscriptionAutoRenewalApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/subscription/stop-renewal:
+    put:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Stop to continue Subscription Plan'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  /account/rider/subscription/{subscriptionId}/cancel:
+    put:
+      tags:
+      - 'Rider Subscription'
+      summary: 'Cancel Subscription'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SubscriptionId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'      
+  
+  #Booking APIs
+  /account/rider/booking/nearest-driver:
+     post:
+      tags:
+      - 'Rider Booking API'
+      summary: 'Search nearest driver of all category'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Nearest API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderNearestDriverApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderNearestDriverApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'
+  /account/rider/booking/request-ride:
+     post:
+      tags:
+      - 'Rider Booking API'
+      summary: 'Request Ride'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'body'
+        description: 'Request Ride API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderRequestRideApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderRequestRideApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'  
+  /account/rider/booking/{bookingId}/cancel:
+     put:
+      tags:
+      - 'Rider Booking API'
+      summary: 'Cancel Booking'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/BookingId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'  
+  
+  #Trip APIs
+  /account/rider/trip/list:
+    get:
+      tags:
+      - 'Rider Trip'
+      summary: 'Get Trip List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/Skip'
+      - $ref: '#/parameters/Limit'
+      - in: 'query'
+        name: 'tripStatus'
+        type: 'string'
+        minimum: 0
+        description: 'The Trip Status'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderTripListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/rider/trip/{tripId}:
+    get:
+      tags:
+      - 'Rider Trip'
+      summary: 'Get Trip Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderTripDetailsApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/rider/trip/{tripId}/other-riders:
+    get:
+      tags:
+      - 'Rider Trip'
+      summary: 'Get Other Riders '
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/OtherRidersApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/rider/trip/{tripId}/share-details:
+    post:
+      tags:
+      - 'Rider Trip'
+      summary: 'Share Details'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Cancel Reason API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderTripShareDetailsApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/rider/trip/{tripId}/cancel:
+    put:
+      tags:
+      - 'Rider Trip'
+      summary: 'Cancel Trip'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Cancel Reason API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderTripCancelReasonApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+  /account/rider/trip/{tripId}/feedback:
+    post:
+      tags:
+      - 'Rider Trip'
+      summary: 'Send Feedback and Rating'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Feedback Rating API Body'
+        required: true
+        schema:
+          $ref: '#/definitions/RiderBookingFeedbackRatingApiBody'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'          
+  /account/rider/trip/{tripId}/complaint:
+    post:
+      tags:
+      - 'Rider Trip'
+      summary: 'Send Complaint'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/TripId'
+      - in: 'body'
+        name: 'body'
+        description: 'Complaint API Body'
+        required: true
+        schema:
+          type: object
+          properties:
+           message: 
+            type: string
+            example: 'Complaint'
+             
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/SuccessApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'          
+  
+  #Card
+  /account/rider/card:
+    post:
+      tags:
+      - "Rider Card"
+      summary: "Add Rider Card"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: "body"
+        name: "body"
+        description: "Card Information"
+        required: true
+        schema:
+          type: object
+          properties:
+            cardToken:
+             type: string
+             example: 'cus_Cn9tIKTUu1gHWp'
+            paymentGateway:
+             type: number
+             example: 2
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+    get:
+      tags:
+      - "Rider Card"
+      summary: "Get Card List"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/RiderCardListApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+  /account/rider/card/{cardId}:
+    put:
+      tags:
+      - "Rider Card"
+      summary: "Change Default Card"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/CardId'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"   
+    delete:
+      tags:
+      - "Rider Card"
+      summary: "Remove Card"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/CardId'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"   
+  /account/rider/card/source-list:
+    get:
+      tags:
+      - "Rider Card"
+      summary: "Get attached source List"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/RiderSourceListApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+  /account/rider/card/change-default-gateway:
+    post:
+      tags:
+      - "Rider Card"
+      summary: "Change default payment gateway"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'paymentGateway'
+        required: true
+        description: 'New Payment Gateway'
+        schema:
+         type: object
+         properties:
+          paymentGateway: 
+           type: number
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+  /account/rider/card/source-delete/{sourceToken}:
+    delete:
+      tags:
+      - "Rider Card"
+      summary: "Remove Debit source"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/SourceToken'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"   
+  
+  #Complaint
+  /account/rider/complaint:
+    get:
+      tags:
+      - 'Rider Complaint'
+      summary: 'Get Complaint List'
+      consumes:
+      - 'application/json'
+      produces:
+      - 'application/json'
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: 'Successful Operation'
+          schema:
+            $ref: '#/definitions/RiderComplaintListApiResponse'
+        400: 
+          description: 'API Validation Error'
+        403:
+          description: 'Unknown Error'        
+ 
+  #Promo Code
+  /account/rider/promo-code/get:
+    post:
+      tags:
+      - "Rider Promo Code"
+      summary: "Get Promo Code"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/RiderPromoCodeApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+  /account/rider/promo-code/add:
+    post:
+      tags:
+      - "Rider Promo Code"
+      summary: "Add Promo Code"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'body'
+        name: 'promoCode'
+        required: true
+        description: 'Promo Code'
+        schema:
+         type: object
+         properties:
+          promoCode: 
+           type: string
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"
+  /account/rider/promo-code/{promoCodeId}/remove:  
+    delete:
+      tags:
+      - "Rider Promo Code"
+      summary: "Remove Promo Code"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - $ref: '#/parameters/DeviceID'
+      - $ref: '#/parameters/DeviceType'
+      - $ref: '#/parameters/Longitude'
+      - $ref: '#/parameters/Latitude'
+      - $ref: '#/parameters/Token'
+      - in: 'path'
+        name: 'promoCodeId'
+        required: true
+        type: 'string'
+        description: 'Promo Code Id'
+      responses:
+        200: 
+          description: "Successful Operation"
+          schema:
+            $ref: "#/definitions/SuccessApiResponse"
+        400: 
+          description: "API Validation Error"
+        403:
+          description: "Unknown Error"   
+    
+definitions:
+  ########################################
+  # API Common API Body and Responses    #
+  ########################################
+  SuccessApiResponse:
+     type: 'object'
+     properties:
+      success:
+        type: 'boolean'
+        default: true
+  ########################################
+  # Rider API Responses                 #
+  ########################################
+  RiderSignupRequestApiResponse:
+    type: object
+    properties:
+     success:
+      type: 'boolean'
+      default: true
+     data: 
+      type: object
+      properties:
+        _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+        otp: 
+          type: string
+          example: 'XBY12DDU'
+  RiderSignupVerifyApiBody:
+    type: object
+    properties: 
+      _id: 
+        type: string
+        example: '5ab0aa8cc01e8b0af14bc728'
+      otp: 
+        type: string
+        example: 'XBY12DDU'        
+  RiderSignupLinkCardApiBody:
+   type: object
+   properties:
+    _id:
+     type: string
+     example: 'qwertyuiophjklasdfg'
+    cardToken:
+     type: string
+     example: 'cardXXXXXX321'
+  RiderSignupVerifyApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: true
+    data:
+     type: object
+     properties: 
+      _id:
+       type: string
+       example: 'abvcdertyuikjhgfq'
+  RiderSignupSelectPaymentGatewayApiResponse:
+   type: object
+   properties:
+    success:
+      type: boolean
+      example: true
+    data:
+      type: object
+      properties: 
+        _id:
+         type: string
+         example: 'abvcdertyuikjhgfq'
+        firstName:
+         type: string
+         example: 'Moumita'
+        lastName:
+         type: string
+         example: 'Mandal'
+        email:
+         type: string
+         example: 'mou@gmail.com'
+  RiderSignupSelectPaymentGatewayApiBody:
+    type: object
+    properties: 
+      _id: 
+        type: string
+        example: '5ab0aa8cc01e8b0af14bc728'
+      paymentGateway: 
+        type: number
+        example: 1        
+  RiderCustomLoginApiBody:
+    type: 'object'
+    required:
+    - phone
+    - password
+    properties:
+      phone:
+        type: 'object'
+        required:
+          - countryCode
+          - number
+        properties: 
+          countryCode:
+            type: string
+            example: 'IN'
+          number: 
+            type: string
+            example: '9089786756'
+      password: 
+        type: 'string'
+        example: 'App123#'
+  RiderSocialLoginApiBody:
+   type: object
+   required:
+    - socialId
+    - loginType
+   properties: 
+    socialId: 
+     type: 'string'
+     example: 'fb4321'
+    loginType:
+     type: number
+     description: 'custom - 1, facebook - 2, twitter - 3'
+     example: 1
+  RiderLoginApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+        default: true
+      data:
+        type: 'object'
+        properties: 
+          token: 
+            type: 'string'
+          user:
+            type: 'object'
+            properties:
+             personalInfo:
+              type: object
+              properties: 
+               email:
+                type: 'string'
+                format: 'email'
+                example: 'goutam.singha@innofied.com'
+               firstName: 
+                type: 'string'
+                example: 'Goutam'
+               lastName: 
+                type: 'string'
+                example: 'Singha'
+               fullName: 
+                type: 'string'
+                example: 'Goutam Singha'
+               nickName: 
+                type: 'string'
+                example: 'Goutam'
+               profilePicture: 
+                type: 'string'
+                format: url
+                example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+               phone:
+                type: object
+                properties:
+                  countryCode: 
+                    type: string
+                    example: 'IN'
+                  number:
+                    type: string
+                    example: '9089674523'
+             accountStatus: 
+                type: number
+                example: 1
+                description: 'active - 1'
+             paymentInfo:
+              type: 'object'
+              properties:
+                payment:
+                 type: array
+                 items:
+                   type: 'object'
+                   properties:
+                    id:
+                     type: string
+                     example: 'xyertyui'
+                    status:
+                     type: number
+                     example: 1
+                    gatewayType:
+                     type: number
+                     example: 1
+                    isDefault:
+                     type: boolean
+                     example: true
+             rating:
+              type: number
+              example: 4
+             subscriptionInfo:
+              type: object
+              properties:
+               subscriptionId:
+                type: string
+                example: 'qwertyyuiop'
+               isRideShare:
+                type: boolean
+                default: false
+               isPetsAllowed:
+                type: boolean
+                default: false
+               priorityBooking:
+                type: boolean
+                default: false
+               distanceInfo:
+                type: object
+                properties:
+                  distanceSubscribed: 
+                   type: number
+                   example: 200
+                  distanceLeft: 
+                   type: number
+                   example: 100
+                  baseDistance: 
+                   type: number
+                   example: 10
+               autoRenewal:
+                type: boolean
+                default: false
+               nextRenewalDate:
+                type: string
+                example: "2018-07-17T10:37:50.000Z"
+               startDate:
+                type: string
+                example: "2018-07-16T10:39:33.920Z"
+             editedSubscriptionPlanId: 
+              type: string
+              example: 'qwertyyuuoutyuytrrew'              
+  RiderForgotPasswordRequestOTPApiBody:
+    type: 'object'
+    properties:
+      phone:
+        type: 'object'
+        required:
+          - countryCode
+          - number
+        properties: 
+          countryCode:
+            type: string
+            example: 'IN'
+          number: 
+            type: string
+            example: '9089785612'
+  RiderForgotPasswordVerifyOTPApiBody:
+    type: 'object'
+    required:
+      - phone
+      - otp
+      - password
+    properties:
+      phone:
+        type: 'object'
+        required:
+          - countryCode
+          - number
+        properties: 
+          countryCode:
+            type: string
+            example: 'IN'
+          number: 
+            type: string
+            example: '9089785612'
+      otp:
+       type: number
+       example: 'AXWERT'
+      password:
+       type: 'string'
+       example: 'App123#'
+       
+  RiderProfileApiResponse:
+    type: 'object'
+    properties:
+      success:
+        type: 'boolean'
+      data:
+        type: 'object'
+        properties: 
+          personalInfo:
+            type: object
+            properties: 
+              email:
+                type: 'string'
+                format: 'email'
+              firstName: 
+                type: 'string'
+              lastName: 
+                type: 'string'
+              fullName: 
+                type: 'string'
+              nickName: 
+                type: 'string'
+                example: 'Goutam'
+              profilePicture: 
+                type: 'string'
+              phone:
+                type: object
+                properties:
+                  countryCode: 
+                    type: string
+                  number:
+                    type: string
+          accountStatus: 
+            type: number
+          paymentInfo:
+            type: 'object'
+            properties:
+              payment:
+                type: array
+                items:
+                  type: 'object'
+                  properties:
+                    id:
+                     type: string
+                     example: 'xyertyui'
+                    status:
+                     type: number
+                     example: 1
+                    gatewayType:
+                     type: number
+                     example: 1
+                    isDefault:
+                     type: boolean
+                     example: true
+          rating:
+            type: number
+            example: 4
+          subscriptionInfo:
+            type: object
+            properties:
+              isRideShare:
+                type: boolean
+                default: false
+              isPetsAllowed:
+                type: boolean
+                default: false
+              priorityBooking:
+                type: boolean
+                default: false
+              distanceInfo:
+                type: object
+                properties:
+                  distanceSubscribed: 
+                   type: number
+                   example: 200
+                  distanceLeft: 
+                   type: number
+                   example: 100
+                  baseDistance: 
+                   type: number
+                   example: 10
+              autoRenewal:
+                type: boolean
+                default: false
+              subscriptionId:
+               type: string
+               example: 'qwertyuiopasd'
+              nextRenewalDate:
+               type: string
+               example: "2018-07-17T10:37:50.000Z"
+              startDate:
+               type: string
+               example: "2018-07-16T10:39:33.920Z"
+          editedSubscriptionPlanId: 
+           type: string
+           example: 'qwertyyuuoutyuytrrew'
+  
+  RiderChangePasswordApiBody: 
+    type: object
+    required:
+     - oldPassword
+     - newPassword
+    properties: 
+      oldPassword: 
+        type: string
+        example: 'App123#'
+      newPassword: 
+        type: string
+        example: 'App321#'
+  RiderChangePhoneNumberRequestApiBody:
+    type: object
+    required: 
+      - countryCode
+      - number
+    properties: 
+      countryCode: 
+       type: string
+       example: 'IN'
+      number:
+       type: string
+       example: '9876543210'
+  RiderChangePhoneNumberVerifyApiBody:
+    type: object
+    required:
+     - otp
+    properties: 
+      otp: 
+       type: string
+       example: 'AREWQT'
+
+  RiderEmergencyContactApiBody: 
+    type: object
+    required: 
+     - emergencyContacts
+    properties:
+     emergencyContacts:
+      type: array
+      items:
+       type: string
+       example: '+91 9078563421'
+ 
+  RiderAddressApiBody: 
+    type: object
+    required: 
+     - label
+     - address
+     - geoLocation
+    properties: 
+     label: 
+      type: string
+      example: 'Home'
+     address:
+      type: string
+      example: '12 Street, Saltlake, Kolkata - 700091'
+     geoLocation:
+      type: array
+      items: 
+        type: number
+      description: '[longitude, latitude]'
+      example: [88, 124]
+  RiderAddressBookListApiResponse: 
+    type: object
+    properties:
+     success:
+      type: boolean
+     data:
+      type: array
+      items:
+        type: object
+        properties: 
+          label: 
+            type: string
+            example: 'Home'
+          address:
+            type: string
+            example: '12 Street, Saltlake, Kolkata - 700091'
+          geoLocation:
+            type: array
+            items: 
+              type: number
+            description: '[longitude, latitude]'
+            example: [88, 124]
+  RiderAddressApiResponse:
+   type: object
+   properties:
+    success: 
+      type: boolean
+      default: true
+    data:
+      type: object
+      properties: 
+       label: 
+        type: string
+        example: 'Home'
+       address:
+        type: string
+        example:  '12 Street, Saltlake, Kolkata - 700091'
+       geoLocation:
+        type: array
+        items: 
+          type: number
+        description: '[longitude, latitude]'
+        example: [88, 124]   
+          
+  GlobalConfigApiResponse:
+   type: object
+   properties:
+    success: 
+      type: boolean
+      default: true
+    data: 
+      type: object
+      properties:
+        termsAndCondition:
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+        privacyPolicy: 
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+        faq:
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+        supportContactNo:
+          type: string
+          example: '+91 9089674523'
+        supportEmail:
+          type: string
+          example: 'goutam.singha@innofied.com'
+        referalMessageForRider: 
+          type: string
+          example: 'Referal Message'
+        appleStoreLink:
+           type: object
+           properties:
+             rider: 
+              type: string
+              example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+             driver:
+              type: string
+              example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+        playStoreLink:
+           type: object
+           properties:
+             rider: 
+              type: string
+              example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+             driver:
+              type: string
+              example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+              
+  RiderHomeStatusApiResponse:
+    type: object
+    properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: object
+      properties:
+       pendingRequest: 
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'AWERTYB'
+         vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: string
+            example: suv
+         requestedNumberOfSeats:
+          type: number
+          example: 3
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         transactionInfo:
+          type: object
+          properties:
+           mode:
+            type: number
+            example: 1
+           cardId: 
+            type: string
+            example: 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
+           gatewayType:
+            type: number
+            example: 1
+         isScheduled: 
+          type: boolean
+          example: false
+         broadcastTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         responseTimeout:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.'
+  RiderHomeAllDriversApiResponse:
+    type: object
+    properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: array
+      items:
+       type: object
+       properties:
+        vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: string
+            example: suv
+        driver:
+         type: object
+         properties:
+          _id:
+           type: string
+          geolocation:
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128] 
+          angle: 
+           type: number
+           example: 2
+  RiderHomeOngoingTripStatus:
+    type: object
+    properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: array
+      items: 
+       type: string
+       example: 'qwerttyuhdsasd'
+   
+  RiderHomeSubscriptionApiResponse:
+    type: object
+    properties:
+     success: 
+      type: boolean
+      default: true
+     data:
+      type: object
+      properties: 
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+             zoneId:
+              type: string
+             planName:
+              type: string
+              example: 'Plan A'
+             distancePerMonth:
+              type: number
+              example: 200
+             pricePerDistanceUnit:
+              type: number
+              example: 20
+             distanceUnit:
+              type: number
+              example: 10
+             nonExclusive:
+              type: object
+              properties:
+                price:
+                 type: number
+                 example: 20
+                planId:
+                 type: string
+                 example: 'qwertyu'
+             addOn:
+              type: object
+              properties:
+               exclusive:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+               pets:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10                  
+               priorityBooking:
+                type: object
+                properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+             initialChargePerRide:
+               type: number
+               example: 10
+             status:
+               type: number
+               example: 1
+             isFree:
+               type: boolean
+               example: true
+        skip:
+         type: number
+         example: 0
+        limit:
+         type: number
+         example: 10
+        total:
+         type: number
+         example: 10
+  
+  RiderSubscriptionApiBody:
+   type: object
+   properties:
+    subscriptionPlanId:
+     type: string
+     example: 'qwertyuiopcx'
+    subscribedPlans:
+     type: array
+     items:
+      type: object
+      properties:
+       planType:
+        type: number
+        example: 1
+       planId:
+        type: string
+        example: 'qwertyuio'
+    startDate:
+     type: string
+     example: "2018-07-06T07:07:41.709Z"
+     
+  RiderSubscriptionDetailsApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     example: false
+    data:
+     type: object
+     properties:
+      rider:
+       type: string
+       example: 'qwertyuioasddkytye'
+      subscriptionPlan:
+       type: object
+       properties:
+        _id:
+         type: string
+         example: 'qwertyyuio'
+        planName:
+         type: string
+         example: 'Plan 1'
+        distancePerMonth:
+         type: number
+         example: 10
+        distanceUnit:
+         type: number
+         example: 1
+        nonExclusive:
+          type: object
+          properties:
+            price:
+              type: number
+              example: 20
+            planId:
+              type: string
+              example: 'qwertyu'
+        addOn:
+          type: object
+          properties:
+            exclusive:
+              type: object
+              properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+            pets:
+              type: object
+              properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10                  
+            priorityBooking:
+              type: object
+              properties:
+                 price:
+                  type: number
+                  example: 20
+                 planId:
+                  type: string
+                  example: 'qwertyu'
+                 surchargePercentage:
+                  type: number
+                  example: 10
+      subscribedPlans:
+       type: array
+       items:
+        type: object
+        properties:
+         planType:
+          type: number
+          example: 1
+         planId:
+          type: string
+          example: 'qwertyuio'
+      subscriptionId:
+       type: string
+       example: 'wertyyuuoiojk'
+      startDate:
+       type: string
+       example: "2018-07-06T07:31:49.808Z"
+      autoRenewal:
+       type: boolean
+       example: true
+      nextRenewalDate:
+       type: string
+       example: "2018-07-06T07:31:49.808Z"
+      trialEndDate:
+       type: string
+       example: "2018-07-06T07:31:49.808Z"
+      canceledDate:
+       type: string
+       example: "2018-07-06T07:31:49.808Z"
+      status:
+       type: number
+       example: 1
+      paymentHistory:
+       type: array
+       items:
+        type: object
+        properties:
+         invoiceId:
+          type: string
+          example: 'invoiceId321'
+         chargeId:
+          type: string
+          example: 'chargeIDqwert'
+         amount:
+          type: number
+          example: 10
+         currency:
+          type: string
+          example: EUR
+         status:
+          type: number
+          example: 1
+         date:
+          type: string
+          example: "2018-07-06T07:31:49.808Z"
+  
+  RiderSubscriptionUpgradeApiBody:
+   type: object
+   properties:
+    amount:
+     type: number
+     example: 20
+    plans:
+     type: array
+     items:
+      type: object
+      properties:
+       planType:
+        type: number
+        example: 1
+       planId:
+        type: string
+        example: 'qwertyuio'
+  RiderSubscriptionAutoRenewalApiBody:
+   type: object
+   properties:
+    autoRenewal:
+     type: boolean
+     example: true
+  RiderNearestDriverApiBody:
+   type: object
+   required: 
+    - pickupLocation
+   properties:
+     pickupLocation:
+      type: array
+      items:
+        type: number
+        description: 'longitude, latitude'
+      example: [88, 128]
+  RiderNearestDriverApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     default: true
+    data: 
+      type: array
+      items:
+       type: object
+       properties:
+        vehicleType:
+          type: object
+          properties:
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           imageUrl:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff&text=Ride'
+           type: 
+            type: string
+            example: suv
+        driver:
+         type: object
+         properties:
+          _id:
+           type: string
+          geolocation:
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128] 
+          angle: 
+           type: number
+           example: 2
+  
+  RiderRequestRideApiBody:
+   type: object
+   required: 
+    - requestedNumberOfSeats
+    - bookingLocation
+    - bookingAddress
+    - pickupLocation
+    - pickupAddress
+    - dropLocation
+    - dropAddress
+    - travelDistance
+    - pickupTime
+    - isScheduled
+    - timeZoneOffset
+   properties: 
+     requestedNumberOfSeats:
+      type: number
+      example: 2
+     bookingLocation:
+      type: array
+      items:
+         type: number
+         description: 'longitude, latitude'
+      example: [88, 128]
+     bookingAddress:
+        type: string
+        example:  '12 Street, Saltlake, Kolkata - 700091'
+     pickupLocation:
+        type: array
+        items:
+           type: number
+           description: 'longitude, latitude'
+        example: [88, 128]
+     pickupAddress:
+        type: string
+        example:  '12 Street, Saltlake, Kolkata - 700091'
+     dropLocation:
+        type: array
+        items:
+           type: number
+           description: 'longitude, latitude'
+        example: [88, 128]
+     dropAddress:
+        type: string
+        example:  '12 Street, Saltlake, Kolkata - 700091'
+     travelDistance:
+      type: number
+      example: 12
+     pickupTime:
+      type: string
+      example: '2018-05-03T05:42:50.357Z'
+     isScheduled:
+      type: boolean
+      example: false
+     timeZoneOffset:
+      type: number
+  RiderRequestRideApiResponse:
+   type: object
+   properties: 
+    success:
+     type: boolean
+     default: true
+    data:
+      type: object
+      properties:
+       _id:
+         type: string
+         example: '5ab0aa8cc01e8b0af14bc728'
+       displayId: 
+        type: string
+        example: 'ABDVER'
+       tripStatus:
+        type: number
+        example: 2
+        description: 'e.g. 1 - ongoing etc.'
+  
+  RiderTripListApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties: 
+      data:
+       type: array
+       items:
+        type: object
+        properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         driver:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           _id:
+            type: string
+         vehicle:
+          type: object
+          properties:
+            _id:
+             type: string
+            licensePlate:
+             type: string
+            registrationNumber:
+             type: string
+            color:
+             type: string
+            brand:
+             type: string
+            model:
+             type: string
+            totalSeats:
+             type: number
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         isScheduled: 
+          type: boolean
+          example: false
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.' 
+      skip: 
+       type: number
+       example: 0
+      limit: 
+       type: number
+       example: 10
+      total: 
+       type: number
+       example: 10
+  RiderTripDetailsApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data: 
+      type: object
+      properties:
+         _id: 
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         displayId:
+          type: string
+          example: 'ABDRTR'
+         driver:
+          type: object
+          properties:
+           firstName: 
+            type: string
+           lastName:
+            type: string
+           fullName: 
+            type: string
+           profilePicture:
+            type: string
+            example: 'https://dummyimage.com/600x400/000/fff'
+           _id:
+            type: string
+         bookingLocation:
+          type: array
+          items:
+           type: number
+           description: 'longitude, latitude'
+          example: [88, 128]
+         bookingAddress:
+          type: string
+          example:  '12 Street, Saltlake, Kolkata - 700091'
+         bookingTime:
+          type: string
+          example: "2018-05-02T10:56:05.530Z"
+         pickupLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         pickupAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         dropLocation:
+          type: object
+          properties:
+           requested: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+           actual: 
+            type: array
+            items:
+             type: number
+             description: 'longitude, latitude'
+            example: [88, 128]
+         dropAddress:
+          type: object
+          properties:
+           requested: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+           actual: 
+             type: string
+             example:  '12 Street, Saltlake, Kolkata - 700091'
+         isScheduled: 
+          type: boolean
+          example: false
+         travelDistance:
+          type: object
+          properties:
+            requested:
+              type: number
+              example: 2
+            actual:
+             type: number
+             example: 4
+         pathFromReachingPickupToStart:
+          type: array
+          items:
+           type: array
+           items:
+            type: string
+           example: [88, 22]
+         path:
+           items:
+            type: string
+           example: [88, 22]
+         pathImageUrl:
+          type: string
+          format: url
+          example: 'http://generator.lorem-ipsum.info/terms-and-conditions'
+         driverArrivalTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         startTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         dropTime:
+          type: string
+          example: '2018-05-03T07:16:08.901Z'
+         appliedPromoCodeId:
+          type: object
+          properties: 
+           _id: 
+            type: string
+            example: '5ab0aa8cc01e8b0af14bc728'
+           code:
+            type: string
+            example: 'KOLKATA1'
+           noOfRides:
+            type: number
+            example: 2
+           promoType:
+            type: number
+            example: 2
+           percentageDiscount:
+            type: number
+            example: 2 
+           fixedDiscout:
+            type: number
+            example: 2
+           maximumDiscount:
+            type: number
+            example: 2
+           expiryDate:
+            type: string
+            example: '2018-05-03T07:16:08.901Z'
+         deductionInfo:
+           type: object
+           properties:
+            promoDistance:
+             type: number
+             example: 20
+            baseDistance:
+             type: number
+             example: 20
+            riderDeductableDistance:
+             type: number
+             example: 2
+            additionalGuestsChargeFactor:
+             type: number
+             example: 2
+            additionalRidersDiscountFactor:
+             type: number
+             example: 2
+            tripDistance:
+             type: number
+             example: 2
+         cancelInfo:
+           type: object
+           properties:
+              cancelTime:
+               type: string
+               example: '2018-05-03T07:16:08.901Z'
+              cancelReason:
+               type: string
+               example: 'Driver Cancel'
+              noShowDriverLocation:
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]
+              noShowRiderLocation: 
+                type: array
+                items:
+                 type: number
+                 description: 'longitude, latitude'
+                example: [88, 128]               
+         tripStatus: 
+          type: number
+          example: 1
+          description: 'e.g. Ongoing - 1 etc.'      
+  OtherRidersApiResponse:
+   type: object
+   properties: 
+    success: 
+     type: boolean
+     default: true
+    data: 
+      type: object
+      properties:
+         driverId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         vehicleId:
+          type: string
+          example: '5ab0aa8cc01e8b0af14bc728'
+         remainingSeats:
+          type: number
+          example: 2
+         tripSequenceStatus:
+          type: number
+          example: 2  
+         isRideShare:
+          type: boolean
+          example: false
+         isPetsAllowed:
+          type: boolean
+          example: true
+         immediatePickUp:
+          type: object
+          properties:
+           displayId:
+            type: string
+            example: 'DXERTYUI'
+           rider:
+            type: object
+            properties:
+             _id: 
+              type: string
+              example: '5ab0aa8cc01e8b0af14bc728'
+             displayId:
+              type: string
+              example: 'ECTYUJK'
+             firstName:
+              type: string
+              example: 'Goutam'
+             lastName:
+              type: string
+              example: 'Singha'
+             fullName:
+              type: string
+              example: 'Goutam Singha'
+             nickName:
+              type: string
+              example: 'Goutam'
+             phone: 
+              type: object
+              properties:
+               countryCode:
+                type: string
+                example: 'IN'
+               number:
+                example: '9078563421'
+             profilePicture:
+              type: string
+              example: 'https://dummyimage.com/600x400/000/fff'
+             email:
+              type: string
+              format: email
+              example: 'goutam.singha@innofied.com'
+           pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+           pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+           dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+           dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+           tripStatus:
+              type: number
+              example: 2           
+           requestedNumberOfSeats:
+            type: number
+         currentDropSequence:
+          type: array
+          items:
+            type: object
+            properties:
+             displayId:
+              type: string
+              example: 'DXERTYUI'
+             rider:
+              type: object
+              properties:
+               _id: 
+                type: string
+                example: '5ab0aa8cc01e8b0af14bc728'
+               displayId:
+                type: string
+                example: 'ECTYUJK'
+               firstName:
+                type: string
+                example: 'Goutam'
+               lastName:
+                type: string
+                example: 'Singha'
+               fullName:
+                type: string
+                example: 'Goutam Singha'
+               nickName:
+                type: string
+                example: 'Goutam'
+               phone: 
+                type: object
+                properties:
+                 countryCode:
+                  type: string
+                  example: 'IN'
+                 number:
+                  example: '9078563421'
+               profilePicture:
+                type: string
+                example: 'https://dummyimage.com/600x400/000/fff'
+               email:
+                type: string
+                format: email
+                example: 'goutam.singha@innofied.com'
+               subscriptionInfo:
+                type: object
+                properties:
+                 isRideShare:
+                  type: boolean
+                  example: false
+                 isPetsAllowed:
+                  type: boolean
+                  example: false
+                 priorityBooking:
+                  type: boolean
+                  example: false
+               ratingData:
+                type: object
+                properties:
+                 total:
+                  type: number
+                 count:
+                  type: number
+             pickupLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             pickupAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             dropLocation:
+              type: object
+              properties:
+                requested:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]   
+                actual:
+                  type: array
+                  items:
+                   type: number
+                  example: [88,22]
+             dropAddress:
+              type: object
+              properties:
+                requested:
+                  type: string
+                  example: 'SS Road, Kolkata'
+                actual:
+                  type: string
+                  example: 'SS Road, Kolkata'
+             tripStatus:
+              type: number
+              example: 2
+             requestedNumberOfSeats:
+              type: number
+             
+    
+  RiderTripShareDetailsApiBody:
+   type: object
+   properties:
+    phoneNumbers:
+     type: array
+     items: 
+      type: string
+      example: "+91 9087654321"
+  RiderTripCancelReasonApiBody:
+   type: object
+   properties:
+     cancelInfo:
+      type: object
+      properties:
+        cancelTime:
+         type: string
+         example: '2018-05-03T05:42:50.357Z'       
+        cancelReason: 
+         type: string
+         example: 'Canceled Reason'
+        noShowRiderLocation:
+          type: array
+          items:
+             type: number
+             description: 'longitude, latitude'
+          example: [88, 128]      
+  RiderBookingFeedbackRatingApiBody:
+   type: object
+   properties:
+    feedback: 
+     type: string
+     example: 'excellent feedback'
+    rating: 
+     type: number
+     example: 5
+  RiderCardListApiResponse:
+   type: object
+   properties:
+    success:
+     type: boolean
+     default: true
+    data:
+     type: array
+     items:
+      properties:
+       id: 
+        type: string
+        example: 'card_1CNZZI2eZvKYlo2C94tMIbtQ'
+       brand: 
+        type: string
+        example: 'Visa'
+       last4: 
+        type: string
+        example: '4242'
+       name: 
+        type: string
+        example: 'bank'
+       exp_month: 
+        type: number
+        example: 8
+       exp_year:
+        type: number
+        example: 2018
+  RiderSourceListApiResponse:
+    type: object
+    properties:
+      success:
+       type: boolean
+       default: true
+      data:
+        type: object
+        properties:
+         cardList: 
+           type: array
+           items:
+            properties:
+             id: 
+              type: string
+              example: 'card_1CNZZI2eZvKYlo2C94tMIbtQ'
+             brand: 
+              type: string
+              example: 'Visa'
+             last4: 
+              type: string
+              example: '4242'
+             expYear: 
+              type: number
+              example: 8
+             expMonth:
+              type: number
+              example: 2018
+         source: 
+          type: object
+          properties:
+            id: 
+              type: string
+              example: 'src_1CNZZI2eZvKYlo2C94tMIbtQ'
+            last4: 
+              type: string
+              example: '3002'              
+         defaultSource: 
+          type: string
+          example: 'card_1CNZZI2eZvKYlo2C94tMIbtQ'
+  RiderComplaintListApiResponse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties:
+       data: 
+        type: array
+        items:
+         type: object
+         properties:
+          _id: 
+           type: string
+          message:
+           type: string
+           example: 'Complaint'
+          trip:
+           type: object
+           properties:
+            _id:
+             type: string
+            displayId:
+             type: string
+            driver:
+              type: object
+              properties:
+               firstName: 
+                type: string
+               lastName:
+                type: string
+               fullName: 
+                type: string
+               _id:
+                type: string
+            pickupAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+            dropAddress:
+              type: object
+              properties:
+               requested: 
+                 type: string
+                 example:  '12 Street, Saltlake, Kolkata - 700091'
+            vehicle:
+             type: object
+             properties:
+              _id:
+               type: string
+              licensePlate:
+               type: string
+              registrationNumber:
+               type: string
+            bookingTime:
+             type: string
+             example: "2018-06-04T05:39:56.871Z"
+            pickupTime:
+             type: string
+             example: "2018-06-04T05:39:56.871Z"
+            dropTime:
+             type: string
+             example: "2018-06-04T05:39:56.871Z"
+          status:
+            type: number
+            example: 1
+       skip:
+        type: number
+        example: 1
+       limit: 
+        type: number
+        example: 10
+       total: 
+        type: number
+        example: 10
+  RiderPromoCodeApiResponse:
+   type: object
+   properties:
+    success: 
+     type: boolean
+     default: true
+    data:
+     type: object
+     properties:
+      code:
+       type: string
+       example: 'promoName'
+      noOfRides:
+       type: number
+       example: 2
+      promoType:
+       type: number
+       example: 2
+      percentageDiscount:
+       type: number
+       example: 22
+      fixedDiscout:
+       type: number
+       example: 22
+      maximumDiscount:
+       type: number
+       example: 22
+      expiryDate:
+       type: string
+       example: '2018-05-30T14:44:24.894Z'
+      zone:
+       type: string
+       example: '5ab0aa8cc01e8b0af14bc728'
+      status:
+       type: number
+       example: 2
